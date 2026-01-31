@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Admin Login - DS Fish Hunter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff0f0f 0%, #b30000 100%);
+            --neon-red: #ff0f0f;
+            --neon-blue: #00f3ff;
+            --dark-bg: #0a192f;
+            --gold: #daa520;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            background-image:
+                linear-gradient(rgba(30, 58, 138, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 58, 138, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Vignette */
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, #000 90%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            z-index: 10;
+        }
+
+        .auth-card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Neon Border Animation */
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff0000, #330000, #ff0000);
+            background-size: 400%;
+            z-index: -1;
+            animation: neonBorder 10s linear infinite;
+            border-radius: 32px;
+            opacity: 0.5;
+        }
+
+        /* Inner bg to cover border center */
+        .auth-card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            background: rgba(10, 10, 10, 0.95);
+            border-radius: 29px;
+            z-index: -1;
+        }
+
+        @keyframes neonBorder {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes cardEntrance {
+            from {
+                transform: translateY(50px) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .logo-icon {
+            font-size: 3.5rem;
+            background: linear-gradient(to bottom, #ff0f0f, #800000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.6));
+            animation: floatLogo 4s ease-in-out infinite;
+        }
+
+        @keyframes floatLogo {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.6));
+            }
+
+            50% {
+                transform: translateY(-10px);
+                filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.9));
+            }
+        }
+
+        .logo-area h1 {
+            margin-top: 1rem;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-area p {
+            font-size: 0.85rem;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.1rem 1rem 1.1rem 3.5rem;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff0f0f;
+            background: rgba(255, 15, 15, 0.05);
+            box-shadow: 0 0 25px rgba(255, 15, 15, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .form-input:focus+.form-icon {
+            color: #ff4d4d;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .toggle-password:hover {
+            color: #fff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-submit:hover::after {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .switch-auth a {
+            color: #ff4d4d;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .alert-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            color: #ff4d4d;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: fadeIn 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Bubbles Background */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(220, 20, 60, 0.2), transparent);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-120vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- MODERN LOGIN OVERLAY --- */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: #020202;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        #loginOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-gate {
+            width: 100%;
+            height: 2px;
+            background: var(--primary-gradient);
+            position: absolute;
+            left: 0;
+            transform: scaleX(0);
+            transition: transform 1s ease;
+        }
+
+        .gate-top {
+            top: 0;
+        }
+
+        .gate-bottom {
+            bottom: 0;
+        }
+
+        #loginOverlay.active .overlay-gate {
+            transform: scaleX(1);
+        }
+
+        .scan-effect {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent, rgba(255, 0, 0, 0.05), transparent);
+            background-size: 100% 200px;
+            animation: moveScan 2s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes moveScan {
+            from {
+                background-position: 0 -200px;
+            }
+
+            to {
+                background-position: 0 100%;
+            }
+        }
+
+        .access-granted {
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .access-granted i {
+            font-size: 4rem;
+            color: #ff0f0f;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+            animation: successPulse 1s ease-in-out infinite;
+        }
+
+        .granted-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .granted-id {
+            color: #ff0f0f;
+            font-family: monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        @keyframes successPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 40px rgba(255, 0, 0, 1));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <!-- Cool Login Overlay -->
+    <div id="loginOverlay">
+        <div class="scan-effect"></div>
+        <div class="overlay-gate gate-top"></div>
+        <div class="overlay-gate gate-bottom"></div>
+        <div class="access-granted">
+            <i class="fas fa-shield-alt"></i>
+            <div class="granted-title">Access Granted</div>
+            <div class="granted-id">PROTOCOL: ADMIN_BYPASS_INIT</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- LOGIN FORM -->
+        <div class="auth-card" id="loginCard">
+            <div class="logo-area">
+                <i class="fas fa-fish logo-icon"></i>
+                <h1>Admin Login</h1>
+                <p>Masuk ke dashboard manajemen DS Fish Hunter</p>
+            </div>
+
+            <div class="alert-box" id="loginAlert" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i> <span>Username atau password salah!</span>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="text" id="loginUser" class="form-input" placeholder="Username" required>
+                    <i class="fas fa-user form-icon"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPass" class="form-input" placeholder="Password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                    <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('loginPass', this)"></i>
+                </div>
+                <button type="submit" class="btn-submit">MASUK <i class="fas fa-arrow-right"></i></button>
+            </form>
+
+
+            <div class="switch-auth" style="margin-top: 0.5rem;">
+                <a href="index.html" style="color: #666; font-size: 0.8rem;"><i class="fas fa-chevron-left"></i> Kembali
+                    ke Beranda</a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // --- ANIMATIONS ---
+        // Create bubbles dynamically
+        function createBubbles() {
+            const container = document.getElementById('bubbles');
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                const size = Math.random() * 50 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(bubble);
+            }
+        }
+        createBubbles();
+
+        // --- AUTH LOGIC (LOCAL STORAGE) ---
+
+        // Helper to check/get admins from localStorage
+        // Helper to check/get admins from localStorage
+        function getAdmins() {
+            let admins = [];
+            const stored = localStorage.getItem('fishHunterAdmins');
+            if (stored) {
+                admins = JSON.parse(stored);
+            }
+
+            // Enforce default admin credentials
+            const targetUser = 'DS Fish Hunter';
+            const targetPass = '12345';
+
+            const existingIndex = admins.findIndex(a => a.username === targetUser);
+            if (existingIndex !== -1) {
+                admins[existingIndex].password = targetPass; // Update password if exists
+            } else {
+                admins.push({ username: targetUser, password: targetPass }); // Add if not exists
+            }
+
+            // Also ensure the old 'admin' user is removed or updated if you want strictness, 
+            // but for safety we just save the list with the new VIP user.
+            localStorage.setItem('fishHunterAdmins', JSON.stringify(admins));
+            return admins;
+        }
+
+
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userIn = document.getElementById('loginUser').value;
+            const passIn = document.getElementById('loginPass').value;
+            const alertBox = document.getElementById('loginAlert');
+
+            const admins = getAdmins();
+            const foundUser = admins.find(a => a.username === userIn && a.password === passIn);
+
+            if (foundUser) {
+                // SUCCESS
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('currentAdminUser', foundUser.username);
+                alertBox.style.display = 'none';
+
+                // Add loading effect
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMUAT...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    // Activate Cool Transition
+                    const overlay = document.getElementById('loginOverlay');
+                    overlay.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1500);
+                }, 1000);
+            } else {
+                // FAIL
+                alertBox.style.display = 'flex';
+                alertBox.querySelector('span').innerText = 'Username atau password salah!';
+            }
+        }
+
+
+
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>
+```

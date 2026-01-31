@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DS Fish Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Animate on Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* Custom animations and styles */
+        .gradient-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/img/hero_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            /* Animation removed for static image background */
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(6, 182, 212, 0.8);
+            }
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Dark mode styles */
+        /* Modern Dark Mode by Antigravity */
+        .dark {
+            background-color: #0a192f;
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(30, 58, 138, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            color: #e2e8f0;
+        }
+
+        .dark .bg-white {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Fix header specifics in dark mode */
+        .dark header {
+            background-color: rgba(2, 6, 23, 0.8) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Adjust secondary backgrounds */
+        .dark .bg-gray-100 {
+            background-color: #0f172a !important;
+        }
+
+        .dark .bg-gray-50 {
+            background-color: #1e293b !important;
+        }
+
+        .dark .text-gray-800 {
+            color: #f1f5f9 !important;
+        }
+
+        .dark .text-gray-600 {
+            color: #cbd5e1 !important;
+        }
+
+        /* Enhance inputs and borders in dark mode if any */
+        .dark .border-gray-100 {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Loading animation */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #06b6d4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .text-gradient-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(127, 29, 29, 0.3));
+        }
+
+        /* Game Cursor Customization */
+        .game-cursor-active {
+            cursor: none !important;
+        }
+
+        #gameSharkCursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 50px;
+            display: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Back to Top Button Stylings */
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        #backToTop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #backToTop:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Order Modal Stylings */
+        #orderModal {
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            display: none;
+            overflow-y: auto;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        #orderModal.show {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            margin: auto;
+            position: relative;
+            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .dark .modal-card {
+            background: #1e293b;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Secret Game Stylings */
+        #predatorGameArea {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(5, 68, 94, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        #predatorGameArea.active {
+            display: flex;
+        }
+
+        #gameCanvas {
+            background: rgba(24, 154, 180, 0.2);
+            border: 4px solid #06b6d4;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(6, 182, 212, 0.3);
+        }
+
+        .game-score {
+            position: absolute;
+            top: 30px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+            pointer-events: none;
+        }
+
+        .game-exit {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .game-exit:hover {
+            background: rgba(239, 68, 68, 0.8);
+            transform: scale(1.1);
+        }
+
+        .game-hint {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        #inlineGameContainer.cursor-none {
+            cursor: none !important;
+        }
+
+        /* Floating WhatsApp Button */
+        #floatingWA {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #25d366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 99;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            animation: pulseWA 2s infinite;
+        }
+
+        @keyframes pulseWA {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+
+        #floatingWA:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 transition-colors duration-300">
+
+    <!-- PRELOADER -->
+    <div id="preloader"
+        class="fixed inset-0 z-[9999] bg-[#020617] flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000">
+
+        <!-- CSS Loader Animation -->
+        <div class="relative flex items-center justify-center mb-8">
+            <!-- Pulsing Core -->
+            <div class="absolute w-4 h-4 bg-red-600 rounded-full animate-ping opacity-75"></div>
+            <div class="absolute w-4 h-4 bg-red-600 rounded-full shadow-[0_0_20px_rgba(220,38,38,0.8)]"></div>
+
+            <!-- Rotating Rings -->
+            <div
+                class="w-24 h-24 border-4 border-transparent border-t-red-600 border-b-red-900 rounded-full animate-spin-slow absolute">
+            </div>
+            <div
+                class="w-32 h-32 border-2 border-transparent border-r-cyan-600 border-l-cyan-900 rounded-full animate-spin-reverse absolute opacity-60">
+            </div>
+            <div
+                class="w-48 h-48 border border-transparent border-t-red-500/30 rounded-full animate-pulse-slow absolute">
+            </div>
+
+            <!-- Radar Sweep Effect -->
+            <div class="w-40 h-40 rounded-full border border-white/5 absolute animate-ping-slow"></div>
+        </div>
+
+        <!-- Text -->
+        <div class="relative z-10 text-center mt-12">
+            <h2
+                class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-red-500 bg-300% animate-shine tracking-widest uppercase filter drop-shadow-lg">
+                DS Fish Hunter
+            </h2>
+            <div class="flex items-center justify-center gap-2 mt-4">
+                <div class="w-2 h-2 bg-red-600 rounded-full animate-bounce delay-75"></div>
+                <div class="w-2 h-2 bg-red-600 rounded-full animate-bounce delay-150"></div>
+                <div class="w-2 h-2 bg-red-600 rounded-full animate-bounce delay-300"></div>
+            </div>
+            <p class="text-red-500/70 font-mono mt-2 tracking-[0.3em] text-xs uppercase animate-pulse">Memindai
+                Wilayah...</p>
+        </div>
+    </div>
+
+    <style>
+        /* Loader Custom Animations */
+        @keyframes spin-slow {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin-reverse {
+            0% {
+                transform: rotate(360deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes pulse-slow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-spin-reverse {
+            animation: spin-reverse 5s linear infinite;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s ease-in-out infinite;
+        }
+
+        .animate-shine {
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        .animate-ping-slow {
+            animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .bg-300\% {
+            background-size: 300% auto;
+        }
+    </style>
+
+    <div id="gameSharkCursor">🦈</div>
+
+    <!-- Sticky Navigation Header -->
+    <header
+        class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300 dark:bg-gray-900/90 dark:border-b dark:border-gray-800">
+        <nav class="max-w-6xl mx-auto px-6 py-4 dark:text-white">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-skull-crossbones text-red-600 text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tighter">DS<span class="text-red-600"> Fish
+                            Hunter</span></span>
+                </div>
+
+                <div class="hidden md:flex space-x-6">
+                    <a href="#ringkasan" class="hover:text-cyan-600 transition-colors font-medium">Ringkasan</a>
+                    <a href="#profil" class="hover:text-cyan-600 transition-colors font-medium">Profil</a>
+                    <a href="#pasar" class="hover:text-cyan-600 transition-colors font-medium">Pasar</a>
+                    <a href="#pemasaran" class="hover:text-cyan-600 transition-colors font-medium">Pemasaran</a>
+                    <a href="#koleksi" class="hover:text-cyan-600 transition-colors font-medium">Koleksi</a>
+                    <a href="#tiktok" class="hover:text-cyan-600 transition-colors font-medium">TikTok Live</a>
+                    <button id="navOrderBtn"
+                        class="text-orange-500 hover:text-orange-600 font-bold flex items-center gap-1 transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <!-- Member Area Button -->
+                    <button id="loginBtn"
+                        class="bg-red-700/80 hover:bg-red-700 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 transition-all">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="loginBtnText">Member Area</span>
+                    </button>
+
+                    <button id="darkModeToggle"
+                        class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-moon text-gray-600 dark:text-gray-200"></i>
+                    </button>
+                    <button id="mobileMenuToggle" class="md:hidden p-2">
+                        <i class="fas fa-bars text-gray-600 dark:text-gray-200"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+                <a href="#ringkasan" class="block py-2 hover:text-cyan-600 transition-colors">Ringkasan</a>
+                <a href="#profil" class="block py-2 hover:text-cyan-600 transition-colors">Profil</a>
+                <a href="#pasar" class="block py-2 hover:text-cyan-600 transition-colors">Pasar</a>
+                <a href="#pemasaran" class="block py-2 hover:text-cyan-600 transition-colors">Pemasaran</a>
+                <a href="#koleksi" class="block py-2 hover:text-cyan-600 transition-colors">Koleksi</a>
+                <button id="mobileOrderBtn"
+                    class="w-full text-left py-2 text-orange-500 font-bold flex items-center gap-2">
+                    <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="gradient-bg text-white min-h-screen flex items-center relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute inset-0">
+            <div class="absolute top-20 left-10 w-20 h-20 bg-red-600 rounded-full opacity-10 floating"></div>
+            <div class="absolute top-40 right-20 w-32 h-32 bg-gray-600 rounded-full opacity-10 floating"
+                style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/4 w-16 h-16 bg-red-900 rounded-full opacity-10 floating"
+                style="animation-delay: 4s;"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <div class="floating">
+                <i class="fas fa-dragon text-6xl mb-6 text-gradient-icon"></i>
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black mb-4 uppercase tracking-tighter" data-aos="fade-down">
+                DS <span class="text-red-600">Fish Hunter</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 font-light tracking-widest uppercase" data-aos="fade-up">
+                Ganas • Eksklusif • Penguasa Aquascape
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="zoom-in">
+                <a href="#koleksi"
+                    class="bg-red-700 hover:bg-red-800 px-8 py-4 rounded-full text-lg font-semibold transition pulse-glow flex items-center justify-center">
+                    <i class="fas fa-dragon mr-2"></i> Lihat Koleksi
+                </a>
+                <button onclick="openOrderModal()"
+                    class="bg-orange-600 hover:bg-orange-700 px-8 py-4 rounded-full text-lg font-semibold transition shadow-lg shadow-orange-900/40 flex items-center justify-center">
+                    <i class="fas fa-shopping-cart mr-2"></i> Pesan Sekarang
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- DAFTAR ISI -->
+    <section class="py-16">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-8 text-center" data-aos="fade-up">Daftar Isi</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow card-hover group cursor-pointer" data-aos="zoom-in-up">
+                    <div class="flex items-center mb-4">
+                        <i
+                            class="fas fa-file-alt text-cyan-600 text-2xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-semibold text-lg">Ringkasan Eksekutif</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Gambaran umum bisnis HobiZone</p>
+                    <a href="#ringkasan"
+                        class="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center">
+                        Pelajari lebih lanjut <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group cursor-pointer" data-aos="zoom-in-up"
+                    data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <i
+                            class="fas fa-store text-orange-500 text-2xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-semibold text-lg">Profil Bisnis</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Informasi lengkap tentang usaha kami</p>
+                    <a href="#profil"
+                        class="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center">
+                        Pelajari lebih lanjut <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group cursor-pointer" data-aos="zoom-in-up"
+                    data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <i
+                            class="fas fa-chart-line text-orange-500 text-2xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-semibold text-lg">Analisis Pasar</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Potensi dan peluang pasar ikan hias</p>
+                    <a href="#pasar" class="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center">
+                        Pelajari lebih lanjut <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group cursor-pointer" data-aos="zoom-in-up"
+                    data-aos-delay="300">
+                    <div class="flex items-center mb-4">
+                        <i
+                            class="fas fa-bullhorn text-cyan-600 text-2xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-semibold text-lg">Strategi Pemasaran</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Cara kami menjangkau pelanggan</p>
+                    <a href="#pemasaran"
+                        class="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center">
+                        Pelajari lebih lanjut <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group cursor-pointer" data-aos="zoom-in-up"
+                    data-aos-delay="500">
+                    <div class="flex items-center mb-4">
+                        <i
+                            class="fas fa-dragon text-red-600 text-2xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-semibold text-lg">Koleksi Predator Premium</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Eksklusivitas ikan pemangsa kasta tertinggi</p>
+                    <a href="#koleksi"
+                        class="text-orange-500 hover:text-orange-600 font-medium inline-flex items-center">
+                        Pelajari lebih lanjut <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RINGKASAN -->
+    <section class="bg-white py-16" id="ringkasan">
+        <div class="max-w-4xl mx-auto px-6 text-center" data-aos="zoom-in">
+            <div class="mb-8">
+                <i class="fas fa-file-alt text-cyan-600 text-5xl mb-4"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-4">Ringkasan Eksekutif</h2>
+            <p class="text-lg text-gray-600 mb-6 font-medium italic">
+                DS Fish Hunter adalah episentrum perikanan eksotis yang mengkhususkan diri pada jenis predator kualitas
+                premium dan kasta tertinggi.
+            </p>
+            <div class="flex flex-col gap-6 mt-8 max-w-2xl mx-auto">
+                <!-- Card 1 -->
+                <div
+                    class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center md:items-start gap-6 text-left border border-gray-100 dark:border-gray-700">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i class="fas fa-skull text-red-600 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2 text-gray-800 dark:text-white">Penyaluran Adrenalin</h4>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Koleksi Ikan Eksotis yang Agresif.
+                            Menawarkan sensasi memelihara predator puncak yang memacu adrenalin setiap saat.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center md:items-start gap-6 text-left border border-gray-100 dark:border-gray-700">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-16 h-16 bg-blue-100 dark:bg-cyan-900/30 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i class="fas fa-dollar-sign text-blue-600 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2 text-gray-800 dark:text-white">Investasi Hidup</h4>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Nilai Tinggi untuk Kolektor Puncak.
+                            Ikan premium bukan sekadar hobi, melainkan aset bernilai tinggi yang terus tumbuh.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center md:items-start gap-6 text-left border border-gray-100 dark:border-gray-700">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i class="fas fa-dragon text-purple-600 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2 text-gray-800 dark:text-white">DNA Ikan Predator</h4>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                            Channa, Oscar, Arwana, Pbass, Datnoids, Arapaima Gigas, Wolf Fish, Alligator Gar, Ikan Pari
+                            Air Tawar, Ikan Naga (Bichir), Red Belly Piranha, African Tiger Fish, Channa Maru Yellow
+                            Sentarum, Channa Red Barito, Channa Auranti, Channa Limbata High Fin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFIL BISNIS -->
+    <section id="profil" class="py-16 bg-gray-900 text-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-10" data-aos="fade-up">
+                <h2 class="text-3xl font-bold mb-4">Profil DS Fish Hunter</h2>
+                <p class="text-gray-300">Mengenal lebih dekat otoritas DS Fish Hunter</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="flex items-start space-x-4 p-6 bg-red-50 rounded-xl hover:bg-red-100 transition-colors shadow-sm"
+                    data-aos="flip-up" data-aos-delay="0">
+                    <div class="p-3 bg-white rounded-full shadow-sm">
+                        <i class="fas fa-skull text-red-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-black">Entitas Bisnis</h4>
+                        <p class="text-black">DS Fish Hunter</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-4 p-6 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors shadow-sm"
+                    data-aos="flip-up" data-aos-delay="100">
+                    <div class="p-3 bg-white rounded-full shadow-sm">
+                        <i class="fas fa-map-marker-alt text-blue-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-black">Lokasi</h4>
+                        <p class="text-black">Ruko & Rumahan</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-4 p-6 bg-green-50 rounded-xl hover:bg-green-100 transition-colors shadow-sm"
+                    data-aos="flip-up" data-aos-delay="200">
+                    <div class="p-3 bg-white rounded-full shadow-sm">
+                        <i class="fas fa-clock text-green-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-black">Jam Operasional</h4>
+                        <p class="text-black font-semibold text-sm">Toko: 10.00 – 22.00</p>
+                        <div class="text-black font-semibold text-sm mt-2">
+                            <span class="font-bold text-red-700 block mb-1">Live TikTok:</span>
+                            <p class="text-black">• Pagi: 09.00 - 11.00</p>
+                            <p class="text-black">• Sore-Malam: 17.00 - 20.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-4 p-6 bg-red-50 rounded-xl hover:bg-red-100 transition-colors shadow-sm"
+                    data-aos="flip-up" data-aos-delay="300">
+                    <div class="p-3 bg-white rounded-full shadow-sm">
+                        <i class="fas fa-dragon text-red-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-black">Layanan Utama</h4>
+                        <p class="text-black">Spesialis Predator & Konsultasi Eksklusif</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KOLEKSI PREDATOR -->
+    <section id="koleksi" class="py-16 bg-gray-50 dark:bg-gray-800 transition-colors">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-3xl font-bold mb-4 dark:text-white">Koleksi DS Fish Hunter Premium</h2>
+                <p class="text-gray-600 dark:text-gray-300">Kenali lebih dekat ikan-ikan predator eksotis andalan kami
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Channa -->
+                <!-- Channa -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="0">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/channa_barca.jpg" alt="Channa Barca"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Channa Barca</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Channa barca</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Sang Primadona atau "Raja Channa". Spesies eksotis dan langka dengan warna tubuh kebiruan
+                            yang memukau
+                            serta sirip yang lebar bagaikan layar. Menjadi impian setiap kolektor predator.
+                        </p>
+                        <button onclick="openOrderFor('Channa Barca')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Arwana -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="100">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/arwana_super_red.png" alt="Arwana Super Red"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Arwana Super Red</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Scleropages formosus</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Simbol keberuntungan dan kemewahan. Ikan naga ini memiliki sisik merah merona yang berkilau
+                            nan elegan.
+                            Sangat populer di kalangan kolektor kelas atas.
+                        </p>
+                        <button onclick="openOrderFor('Arwana Super Red')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Oscar -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="200">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/oscar_paris.jpg" alt="Ikan Oscar"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Ikan Oscar</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Astronotus ocellatus</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Ikan Cichlid cerdas dengan pola warna abstrak mirip batik yang artistik. Dikenal memiliki
+                            kepribadian unik
+                            dan dapat berinteraksi dengan pemiliknya.
+                        </p>
+                        <button onclick="openOrderFor('Oscar')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pbass -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="300">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/peacock_bass.png" alt="Peacock Bass"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Peacock Bass (Pbass)</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Cichla ocellaris</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Predator gesit dengan warna-warni cerah layaknya burung merak. Sangat agresif saat makan dan
+                            menjadi
+                            favorit bagi penghobi yang menyukai ikan aktif.
+                        </p>
+                        <button onclick="openOrderFor('Pbass (Peacock Bass)')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Datnoids -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="400">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/datnoids.png" alt="Datnoids"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Datnoids (Tiger Fish)</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Datnioides pulcher</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Dikenal sebagai "Macan Air" karena pola garis hitam vertikalnya yang tegas. Ikan yang sangat
+                            tenang namun
+                            mematikan saat menyergap mangsa.
+                        </p>
+                        <button onclick="openOrderFor('Datnoids')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Wolf Fish -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="500">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/uploaded_media_1769605119427.png"
+                            alt="Wolf Fish"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Wolf Fish (Mala)</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Hoplias malabaricus</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Ikan purba dengan rahang yang sangat kuat. Memiliki daya tahan tubuh yang luar biasa and
+                            karakter
+                            teritorial yang sangat dominan.
+                        </p>
+                        <button onclick="openOrderFor('Wolf Fish')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Arapaima -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="600">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/4ee33b97-f5f0-4817-945a-a62a56d73d3b/uploaded_media_1769659635278.png"
+                            alt="Arapaima Gigas"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Arapaima Gigas</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Arapaima gigas</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Raksasa Amazon. Ikan air tawar terbesar di dunia dengan sisik yang keras dan ekor berwarna
+                            merah
+                            spektakuler saat dewasa.
+                        </p>
+                        <button onclick="openOrderFor('Arapaima Gigas')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alligator Gar -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="700">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/uploaded_media_1769605083803.jpg"
+                            alt="Alligator Gar"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Alligator Gar</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Atractosteus spatula</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Predator dengan moncong panjang mirip buaya. Merupakan ikan purba yang telah ada sejak zaman
+                            dinosaurus.
+                        </p>
+                        <button onclick="openOrderFor('Alligator Gar')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pari Air Tawar -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="0">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/stingray_fish_1769614694240.png"
+                            alt="Ikan Pari Air Tawar"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Ikan Pari Air Tawar</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Potamotrygon motoro</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Ikan eksotis dengan pola bintik-bintik yang indah. Memiliki cara berenang yang sangat elegan
+                            namun tetap
+                            memiliki senjata pertahanan yang mematikan di ekornya.
+                        </p>
+                        <button onclick="openOrderFor('Pari Air Tawar')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ikan Naga (Bichir) -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="100">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/uploaded_media_1769614824149.png"
+                            alt="Ikan Naga (Bichir)"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Ikan Naga (Bichir)</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Polypterus senegalus</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Fosil hidup dengan tubuh panjang dan sirip punggung yang unik seperti naga. Ikan purba yang
+                            sangat tangguh
+                            dan memiliki kemampuan menghirup udara.
+                        </p>
+                        <button onclick="openOrderFor('Ikan Naga (Bichir)')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Piranha -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="200">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/uploaded_media_1769614863801.png"
+                            alt="Red Belly Piranha"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Red Belly Piranha</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Pygocentrus nattereri</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Predator legendaris dari sungai Amazon yang terkenal dengan gigi tajam dan kecepatan
+                            serangnya yang luar
+                            biasa saat mencium mangsa.
+                        </p>
+                        <button onclick="openOrderFor('Red Belly Piranha')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- African Tiger Fish -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="300">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="C:/Users/ASUS/.gemini/antigravity/brain/d5af770f-787a-425a-9b9f-53c7ff28ce8b/uploaded_media_1769614934717.png"
+                            alt="African Tiger Fish"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">African Tiger Fish</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Hydrocynus vittatus</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Monster sungai dari Afrika dengan jajaran gigi raksasa yang terlihat jelas. Dikenal sebagai
+                            salah satu
+                            ikan air tawar paling agresif di dunia.
+                        </p>
+                        <button onclick="openOrderFor('African Tiger Fish')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Channa Collection -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <!-- Channa Maru Yellow Sentarum -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="0">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/channa_yellow_sentarum.png" alt="Channa Maru Yellow Sentarum"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Channa Maru Yellow Sentarum</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Channa marulioides</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Varian Channa Maru dengan warna dasar kuning keemasan yang menawan. Bunga-bunga hitam di
+                            tubuhnya menambah kesan eksotis dan garang.
+                        </p>
+                        <button onclick="openOrderFor('Channa Maru Yellow Sentarum')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Channa Red Barito -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="100">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/channa_red_barito.png" alt="Channa Red Barito"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Channa Red Barito</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Channa marulioides</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Salah satu primadona Channa Indonesia dengan warna merah menyala yang membara. Sangat
+                            agresif dan memiliki mental juara di kontes.
+                        </p>
+                        <button onclick="openOrderFor('Channa Red Barito')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Channa Auranti -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="200">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/channa_auranti_v2.png" alt="Channa Auranti"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Channa Auranti</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Channa aurantimaculata</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Dikenal sebagai "Golden Cobra Snakehead". Memiliki corak loreng kuning dan coklat yang
+                            sangat mirip dengan kulit ular kobra.
+                        </p>
+                        <button onclick="openOrderFor('Channa Auranti')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Channa Limbata High Fin -->
+                <div class="bg-white dark:bg-gray-700 rounded-2xl shadow-lg overflow-hidden card-hover group"
+                    data-aos="zoom-in-up" data-aos-delay="300">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="assets/img/channa_limbata_high_fin.png" alt="Channa Limbata High Fin"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 dark:text-white">Channa Limbata High Fin</h3>
+                        <p class="text-red-600 font-semibold text-sm mb-3 italic">Channa gachua</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Channa lokal kebanggaan dengan sirip punggung yang menjulang tinggi (High Fin). Kecil namun
+                            pemberani dengan warna rim yang tajam.
+                        </p>
+                        <button onclick="openOrderFor('Channa Limbata High Fin')"
+                            class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+                            <i class="fas fa-shopping-cart text-xs"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ANALISIS PASAR -->
+    <section class="bg-gray-900 text-white py-16" id="pasar">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-8" data-aos="fade-up">Analisis Pasar</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-800 p-6 rounded-xl card-hover group" data-aos="zoom-in-up">
+                    <div
+                        class="bg-cyan-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Target Pasar</h3>
+                    <p class="text-gray-300">Pelajar, Remaja, Bahkan orang dewasa usia 12-50 tahun</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl card-hover group" data-aos="zoom-in-up" data-aos-delay="100">
+                    <div
+                        class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Permintaan Tinggi</h3>
+                    <p class="text-gray-300">Pertumbuhan pasar ikan Pertahun Naik 20%</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl card-hover group" data-aos="zoom-in-up" data-aos-delay="200">
+                    <div
+                        class="bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-door-open text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Peluang Terbuka</h3>
+                    <p class="text-gray-300">Persaingan masih terbatas di area ini</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STRATEGI -->
+    <section class="py-16" id="pemasaran">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-8 text-center" data-aos="fade-up">Strategi Pemasaran</h2>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow card-hover group text-center" data-aos="zoom-in-up">
+                    <div
+                        class="bg-gradient-to-r from-blue-400 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Media Sosial</h3>
+                    <p class="text-gray-600 text-sm">Promo di Instagram, TikTok, WhatsApp</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group text-center" data-aos="zoom-in"
+                    data-aos-delay="100">
+                    <div
+                        class="bg-gradient-to-r from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-tags text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Diskon Spesial</h3>
+                    <p class="text-gray-600 text-sm">Harga hemat untuk member & pelajar</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group text-center" data-aos="zoom-in"
+                    data-aos-delay="200">
+                    <div
+                        class="bg-gradient-to-r from-blue-400 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-friends text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Partai Ikan</h3>
+                    <p class="text-gray-600 text-sm">Hemat membeli ikan berskala banyak</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow card-hover group text-center" data-aos="zoom-in-up"
+                    data-aos-delay="300">
+                    <div
+                        class="bg-gradient-to-r from-cyan-400 to-cyan-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-star text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Pelayanan Prima</h3>
+                    <p class="text-gray-600 text-sm">Customer service ramah 24/7</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE GAME SECTION -->
+    <section id="game-section"
+        class="py-20 bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
+            <div
+                class="inline-block px-4 py-1 rounded-full bg-red-900/30 border border-red-500/30 text-red-500 text-sm font-bold mb-4 tracking-widest uppercase">
+                Secret Mini-Game
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black mb-6 uppercase italic">Bermain Bersama <span
+                    class="text-red-600">DS
+                    Fish Hunter</span></h2>
+            <p class="text-gray-400 mb-10 max-w-2xl mx-auto">
+                Uji insting berburu Anda! Kendalikan sang penguasa lautan dan beri makan mereka dengan mangsa yang
+                gesit.
+                Gunakan kursor Anda untuk menggerakkan Sharky.
+            </p>
+
+            <div id="inlineGameContainer" class="relative group cursor-none">
+                <div id="gameOverlay"
+                    class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 rounded-3xl transition-opacity duration-500 group-hover:opacity-0">
+                    <i class="fas fa-play-circle text-7xl text-red-600 mb-4 animate-pulse"></i>
+                    <p class="font-bold tracking-widest uppercase">Arahkan Kursor Ke Sini Untuk Bermain</p>
+                </div>
+                <canvas id="inlineCanvas"
+                    class="w-full h-[400px] bg-gray-900/50 border-2 border-red-900/50 rounded-3xl shadow-2xl shadow-red-900/20"></canvas>
+                <div class="absolute top-4 left-6 z-30 font-black text-2xl text-red-500">
+                    YANG DIMAKAN: <span id="inlineScore">0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-skull text-red-600 text-2xl"></i>
+                        <span class="font-bold text-xl tracking-tighter uppercase">DS<span class="text-red-600">
+                                Fish
+                                Hunter</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-4 italic">
+                        DS Fish Hunter: Otoritas tertinggi ikan eksotis premium dengan kualitas kasta bangsawan.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/share/1872eSftRu/" target="_blank"
+                            class="text-gray-400 hover:text-blue-600 transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="https://www.instagram.com/__aryaja?utm_source=qr&igsh=d3dyMDIzZjV3YTE=" target="_blank"
+                            class="text-gray-400 hover:text-pink-600 transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="https://wa.me/qr/AVJBP2FYTCKWI1" target="_blank"
+                            class="text-gray-400 hover:text-green-500 transition-colors">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@dsfishhunter?_r=1&_t=ZS-93SzNZsRpO3" target="_blank"
+                            class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-tiktok text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Link Cepat</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#ringkasan"
+                                class="text-gray-400 hover:text-orange-500 transition-colors">Ringkasan</a></li>
+                        <li><a href="#profil" class="text-gray-400 hover:text-orange-500 transition-colors">Profil
+                                Bisnis</a></li>
+                        <li><a href="#pasar" class="text-gray-400 hover:text-orange-500 transition-colors">Analisis
+                                Pasar</a></li>
+                        <li><a href="#pemasaran" class="text-gray-400 hover:text-orange-500 transition-colors">Strategi
+                                Pemasaran</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4 text-red-600 uppercase tracking-widest">Markas Pusat</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-phone text-red-600"></i>
+                            <span class="text-gray-400">+6283821715069</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-red-600"></i>
+                            <span class="text-gray-400">suryasapriyo3@gmail.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-skull text-red-600"></i>
+                            <span class="text-gray-400">Jl.Gandapuring No. 123, Cirebon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center relative">
+                <p class="text-gray-400">© 2026 DS Fish Hunter | Web Profile Bisnis
+                    <a href="login.html" title="Login untuk Pemilik Usaha"
+                        class="text-gray-600 hover:text-red-500 ml-2 text-xs transition-colors flex inline-flex items-center gap-1"><i
+                            class="fas fa-lock"></i> Login Admin</a>
+                    <span id="gameTrigger"
+                        class="cursor-help opacity-20 hover:opacity-100 transition-opacity ml-1 text-[10px]"
+                        title="Ssstt... Klik untuk bermain">🦈</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- HIDDEN PREDATOR GAME AREA -->
+    <div id="predatorGameArea">
+        <div class="game-exit" id="closeGame">Tutup Game (Esc)</div>
+        <div class="game-score">Skor: <span id="gameScoreValue">0</span></div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-hint">Gerakkan kursor Anda untuk memberi makan sang DS Fish Hunter!</div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- LOGIN MODAL -->
+    <!-- LOGIN MODAL REDESIGNED -->
+    <div id="loginModal"
+        class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-all duration-500">
+        <div
+            class="relative bg-gray-900/90 dark:bg-black/80 border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(220,38,38,0.3)] max-w-md w-full transform scale-95 transition-all duration-500 overflow-hidden group">
+
+            <!-- Glow Effect -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-20 bg-red-600/20 blur-3xl -z-10"></div>
+
+            <!-- Header -->
+            <div class="p-8 pb-0 text-center relative z-10">
+                <div
+                    class="w-20 h-20 bg-gradient-to-br from-red-600 to-red-900 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-900/50 ring-4 ring-black/50">
+                    <i class="fas fa-crown text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white uppercase tracking-wider mb-2">Member Elite</h3>
+                <p class="text-gray-400 text-sm">Bergabunglah dengan komunitas eksklusif DS Fish Hunter.</p>
+            </div>
+
+            <div class="p-8 space-y-5 relative z-10">
+                <!-- Name Input -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-red-500 uppercase tracking-widest ml-1">Identitas
+                        Hunter</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="text" id="loginNama" placeholder="Nama Lengkap Anda"
+                            class="w-full pl-12 pr-4 py-3 bg-black/50 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all outline-none">
+                    </div>
+                </div>
+
+                <!-- WA Input -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-red-500 uppercase tracking-widest ml-1">Kontak
+                        WhatsApp</label>
+                    <div class="relative">
+                        <i class="fab fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="tel" id="loginWA" placeholder="08xx-xxxx-xxxx"
+                            class="w-full pl-12 pr-4 py-3 bg-black/50 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all outline-none">
+                    </div>
+                </div>
+
+                <!-- Address Input -->
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-red-500 uppercase tracking-widest ml-1">Markas /
+                        Alamat</label>
+                    <div class="relative">
+                        <i class="fas fa-map-marked-alt absolute left-4 top-3.5 text-gray-500"></i>
+                        <textarea id="loginAlamat" placeholder="Alamat lengkap pengiriman..." rows="3"
+                            class="w-full pl-12 pr-4 py-3 bg-black/50 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <button id="saveLoginData"
+                    class="w-full bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-900/40 transform active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-red-600/20">
+                    <i class="fas fa-save"></i> <span>AKTIFKAN STATUS MEMBER</span>
+                </button>
+
+                <div id="logoutSection" class="hidden pt-2 border-t border-gray-800">
+                    <button id="logoutBtn"
+                        class="w-full py-2 text-gray-500 hover:text-red-500 text-sm transition-colors flex items-center justify-center gap-2 hover:bg-red-900/10 rounded-lg">
+                        <i class="fas fa-sign-out-alt"></i> Nonaktifkan Keanggotaan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Close Button -->
+            <button id="closeLoginModal"
+                class="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors bg-white/5 hover:bg-white/10 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div id="infoModal"
+        class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full transform scale-90 transition-transform duration-300 flex flex-col overflow-hidden">
+            <div
+                class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gradient-to-r from-red-900 to-black text-white">
+                <h3 class="text-2xl font-bold dark:text-white flex items-center gap-2">
+                    <i class="fas fa-skull text-red-500"></i> Dossier DS Fish Hunter
+                </h3>
+                <button id="closeModal" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 text-gray-600 dark:text-gray-300 overflow-y-auto max-h-[60vh]">
+                <p>
+                    <strong>DS Fish Hunter</strong>DS F adalah spesialis ikan predator kualitas kontes. Kami
+                    mengkurasi ikan
+                    pemangsa terbaik dari seluruh belahan dunia untuk koleksi eksklusif Anda.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check-circle text-cyan-500"></i> Garansi Ikan Sehat
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check-circle text-cyan-500"></i> Konsultasi Gratis
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check-circle text-cyan-500"></i> Pengiriman Aman ke Seluruh Indonesia
+                    </li>
+                </ul>
+                <div
+                    class="mt-4 p-4 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl border border-cyan-100 dark:border-cyan-800 text-sm">
+                    <p class="font-semibold text-cyan-800 dark:text-cyan-200">Jam Operasional Toko:</p>
+                    <p>Senin - Minggu: 10:00 - 22:00 WIB</p>
+                </div>
+            </div>
+            <div class="p-6 bg-gray-50 dark:bg-gray-900/50 flex justify-end">
+                <button id="closeModalBtn"
+                    class="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded-full font-semibold transition-colors shadow-lg shadow-red-900/30">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div id="backToTop" title="Kembali ke Atas">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/qr/AVJBP2FYTCKWI1" id="floatingWA" target="_blank" title="Chat WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+
+    <!-- ORDER MODAL -->
+    <div id="orderModal">
+        <div class="modal-card">
+            <div
+                class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gradient-to-r from-red-900 to-black text-white">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-dragon"></i> Akusisi DS Fish Hunter Premium
+                </h3>
+                <button id="closeOrderModal" class="text-white/80 hover:text-white transition-colors text-2xl">
+                    &times;
+                </button>
+            </div>
+            <form id="waOrderForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Nama Lengkap</label>
+                    <input type="text" id="orderNama" required placeholder="Masukkan nama Anda"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Nomor Telepon (WhatsApp)</label>
+                    <input type="tel" id="orderTelp" required placeholder="Contoh: 08123456789"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Alamat Lengkap</label>
+                    <textarea id="orderAlamat" required placeholder="Masukkan alamat pengiriman lengkap" rows="3"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Pilih Ikan</label>
+                        <select id="orderIkan" required
+                            class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-red-500 outline-none transition">
+                            <option value="" disabled selected>-- Pilih Jenis Ikan --</option>
+                            <option value="Channa Barca">Channa Barca</option>
+                            <option value="Arwana Super Red">Arwana Super Red</option>
+                            <option value="Oscar">Oscar</option>
+                            <option value="Pbass (Peacock Bass)">Pbass (Peacock Bass)</option>
+                            <option value="Datnoids">Datnoids</option>
+                            <option value="Arapaima Gigas">Arapaima Gigas</option>
+                            <option value="Wolf Fish">Wolf Fish</option>
+                            <option value="Alligator Gar">Alligator Gar</option>
+                            <option value="Pari Air Tawar">Pari Air Tawar</option>
+                            <option value="Ikan Naga (Bichir)">Ikan Naga (Bichir)</option>
+                            <option value="Red Belly Piranha">Red Belly Piranha</option>
+                            <option value="African Tiger Fish">African Tiger Fish</option>
+                            <option value="Channa Maru Yellow Sentarum">Channa Maru Yellow Sentarum</option>
+                            <option value="Channa Red Barito">Channa Red Barito</option>
+                            <option value="Channa Auranti">Channa Auranti</option>
+                            <option value="Channa Limbata High Fin">Channa Limbata High Fin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Jumlah (Ekor)</label>
+                        <div class="flex items-center">
+                            <button type="button" id="minusJumlah"
+                                class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 rounded-l-lg border border-r-0 border-gray-200 dark:border-gray-700 hover:bg-red-500 hover:text-white transition group">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                            <input type="number" id="orderJumlah" required min="1" value="1"
+                                class="w-full px-4 py-2 text-center border-y border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-1 focus:ring-red-500 outline-none transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                            <button type="button" id="plusJumlah"
+                                class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white px-3 py-2 rounded-r-lg border border-l-0 border-gray-200 dark:border-gray-700 hover:bg-green-500 hover:text-white transition group">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRICE LIST COMPONENT -->
+                <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900/30">
+                    <p class="font-bold text-red-700 uppercase tracking-wider text-[10px] mb-2 flex items-center gap-2">
+                        <i class="fas fa-tag"></i> Estimasi Harga Predator:
+                    </p>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-gray-700 dark:text-gray-300">
+                        <div class="flex justify-between"><span>Channa Barca:</span> <span
+                                class="font-bold text-red-600">5jt -
+                                50jt+</span></div>
+                        <div class="flex justify-between"><span>Arwana Super Red:</span> <span
+                                class="font-bold text-red-600">3jt
+                                - 15jt</span></div>
+                        <div class="flex justify-between"><span>Oscar:</span> <span class="font-bold text-red-600">100rb
+                                -
+                                500rb</span></div>
+                        <div class="flex justify-between"><span>Pbass:</span> <span class="font-bold text-red-600">200rb
+                                -
+                                1.5jt</span></div>
+                        <div class="flex justify-between"><span>Datnoid:</span> <span
+                                class="font-bold text-red-600">500rb -
+                                2.5jt</span></div>
+                        <div class="flex justify-between"><span>Arapaima:</span> <span
+                                class="font-bold text-red-600">2jt -
+                                10jt</span></div>
+                        <div class="flex justify-between"><span>Wolf Fish:</span> <span
+                                class="font-bold text-red-600">1jt -
+                                4jt</span></div>
+                        <div class="flex justify-between"><span>Alligator Gar:</span> <span
+                                class="font-bold text-red-600">300rb -
+                                1jt</span></div>
+                        <div class="flex justify-between"><span>Pari Motoro:</span> <span
+                                class="font-bold text-red-600">1.5jt -
+                                8jt</span></div>
+                        <div class="flex justify-between"><span>Ikan Naga (Bichir):</span> <span
+                                class="font-bold text-red-600">150rb - 600rb</span></div>
+                        <div class="flex justify-between"><span>Red Belly Piranha:</span> <span
+                                class="font-bold text-red-600">100rb - 300rb</span></div>
+                        <div class="flex justify-between"><span>African Tiger Fish:</span> <span
+                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                        <div class="flex justify-between"><span>Channa Maru Yellow Sentarum:</span> <span
+                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                        <div class="flex justify-between"><span>Channa Red Barito:</span> <span
+                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                        <div class="flex justify-between"><span>Channa Auranti:</span> <span
+                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                        <div class="flex justify-between"><span>Channa Limbata High Fin:</span> <span
+                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Metode Pembayaran</label>
+                    <select id="orderPayment" required
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition">
+                        <option value="" disabled selected>-- Pilih Metode Pembayaran --</option>
+                        <option value="DANA">DANA</option>
+                        <option value="GOPAY">GOPAY</option>
+                        <option value="OVO">OVO</option>
+                        <option value="BANK BCA">BANK BCA</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Upload Bukti Transfer</label>
+                    <div class="relative">
+                        <input type="file" id="orderBukti" accept="image/*"
+                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 dark:file:bg-gray-700 dark:file:text-cyan-400 transition cursor-pointer">
+                    </div>
+                    <div id="buktiPreview" class="mt-2 hidden">
+                        <img src="" alt="Preview Bukti"
+                            class="w-full h-32 object-contain rounded-lg border border-gray-200 dark:border-gray-700">
+                    </div>
+                </div>
+                <div
+                    class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl text-xs space-y-2 border border-gray-100 dark:border-gray-700">
+                    <p class="font-bold text-cyan-600 uppercase tracking-wider text-[10px]">Info Rekening
+                        Pembayaran:</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <p>• <span class="font-bold">BCA:</span> 01236548 A/N SURYA SAPRIYO</p>
+                        <p>• <span class="font-bold">DANA:</span> 0881025070164 A/N SURYA SAPRIYO</p>
+                        <p>• <span class="font-bold">GOPAY:</span> 083821510693 A/N SURYA SAPRIYO</p>
+                        <p>• <span class="font-bold">OVO:</span> 082120655597 A/N SURYA SAPRIYO</p>
+                    </div>
+                    <p class="text-[10px] text-orange-500 font-medium italic mt-2">
+                        <i class="fas fa-info-circle"></i> Kirim bukti transfer di chat WhatsApp setelah klik tombol
+                        di bawah.
+                    </p>
+                </div>
+                <button type="submit"
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp"></i> Kirim ke WhatsApp
+                </button>
+                <!-- Order Modal Logic -->
+
+                <script>
+                    // Order Modal Logic
+                    const orderModal = document.getElementById('orderModal');
+                    const navOrderBtn = document.getElementById('navOrderBtn');
+                    const mobileOrderBtn = document.getElementById('mobileOrderBtn');
+                    const closeOrderModal = document.getElementById('closeOrderModal');
+                    const waOrderForm = document.getElementById('waOrderForm');
+
+                    function openOrderModal() {
+                        orderModal.classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }
+
+                    function openOrderFor(fishName) {
+                        openOrderModal();
+                        const selectIkan = document.getElementById('orderIkan');
+                        if (selectIkan) {
+                            selectIkan.value = fishName;
+                        }
+                    }
+
+                    function closeOrderModalFunc() {
+                        orderModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+
+                    if (navOrderBtn) navOrderBtn.addEventListener('click', () => openOrderModal());
+                    if (mobileOrderBtn) mobileOrderBtn.addEventListener('click', () => openOrderModal());
+                    if (closeOrderModal) closeOrderModal.addEventListener('click', closeOrderModalFunc);
+
+                    // Bukti Transfer Preview Logic
+                    const orderBukti = document.getElementById('orderBukti');
+                    const buktiPreview = document.getElementById('buktiPreview');
+                    const previewImg = buktiPreview.querySelector('img');
+
+                    orderBukti.addEventListener('change', function () {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                previewImg.src = e.target.result;
+                                buktiPreview.classList.remove('hidden');
+                            }
+                            reader.readAsDataURL(file);
+                        } else {
+                            buktiPreview.classList.add('hidden');
+                        }
+                    });
+
+                    // Quantity Control Logic
+                    const orderJumlahInput = document.getElementById('orderJumlah');
+                    const plusJumlahBtn = document.getElementById('plusJumlah');
+                    const minusJumlahBtn = document.getElementById('minusJumlah');
+
+                    if (plusJumlahBtn && orderJumlahInput) {
+                        plusJumlahBtn.addEventListener('click', () => {
+                            orderJumlahInput.value = parseInt(orderJumlahInput.value) + 1;
+                        });
+                    }
+
+                    if (minusJumlahBtn && orderJumlahInput) {
+                        minusJumlahBtn.addEventListener('click', () => {
+                            const currentVal = parseInt(orderJumlahInput.value);
+                            if (currentVal > 1) {
+                                orderJumlahInput.value = currentVal - 1;
+                            }
+                        });
+                    }
+
+                    orderModal.addEventListener('click', (e) => {
+                        if (e.target === orderModal) closeOrderModalFunc();
+                    });
+
+                    // Handle WhatsApp Submit
+                    waOrderForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+
+                        const nama = document.getElementById('orderNama').value;
+                        const telp = document.getElementById('orderTelp').value;
+                        const alamat = document.getElementById('orderAlamat').value;
+                        const ikan = document.getElementById('orderIkan').value;
+                        const jumlah = document.getElementById('orderJumlah').value;
+                        const payment = document.getElementById('orderPayment').value;
+                        const hasBukti = orderBukti.files.length > 0 ? "✅ SUDAH SIAP" : "❌ BELUM DILAMPIRKAN";
+
+                        const message = `*ORDER KONFIRMASI - DS FISH HUNTER*%0A` +
+                            `------------------------------------------%0A` +
+                            `Saya ingin memesan predator premium berikut:%0A%0A` +
+                            `👑 *Jenis Ikan:* ${ikan}%0A` +
+                            `🔢 *Jumlah:* ${jumlah} Ekor%0A%0A` +
+                            `*DATA PEMESAN*%0A` +
+                            `👤 *Nama:* ${nama}%0A` +
+                            `📍 *Alamat:* ${alamat}%0A` +
+                            `📞 *WhatsApp:* ${telp}%0A%0A` +
+                            `*PEMBAYARAN*%0A` +
+                            `💰 *Metode:* ${payment}%0A` +
+                            `📑 *Status Bukti:* ${hasBukti}%0A` +
+                            `------------------------------------------%0A` +
+                            `_Silakan proses pesanan saya. Saya akan mengirimkan bukti transfer setelah ini._`;
+
+                        window.open(`https://wa.me/62881023071064?text=${message}`, '_blank');
+                        closeOrderModalFunc();
+                        waOrderForm.reset();
+                    });
+
+                    // LOGIN & MEMBER LOGIC
+                    const loginModal = document.getElementById('loginModal');
+                    const loginBtn = document.getElementById('loginBtn');
+                    const loginBtnText = document.getElementById('loginBtnText');
+                    const closeLoginModal = document.getElementById('closeLoginModal');
+                    const saveLoginData = document.getElementById('saveLoginData');
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    const logoutSection = document.getElementById('logoutSection');
+
+                    const loginNama = document.getElementById('loginNama');
+                    const loginWA = document.getElementById('loginWA');
+                    const loginAlamat = document.getElementById('loginAlamat');
+
+                    const orderNamaField = document.getElementById('orderNama');
+                    const orderWAField = document.getElementById('orderTelp');
+                    const orderAlamatField = document.getElementById('orderAlamat');
+
+                    function toggleLoginModal() {
+                        const isHidden = loginModal.classList.contains('hidden');
+                        if (isHidden) {
+                            loginModal.classList.remove('hidden');
+                            setTimeout(() => {
+                                loginModal.classList.remove('opacity-0');
+                                loginModal.querySelector('div').classList.remove('scale-90');
+                            }, 10);
+                            // Load existing data to fields
+                            const savedData = JSON.parse(localStorage.getItem('dsMemberData'));
+                            if (savedData) {
+                                loginNama.value = savedData.nama || '';
+                                loginWA.value = savedData.wa || '';
+                                loginAlamat.value = savedData.alamat || '';
+                                logoutSection.classList.remove('hidden');
+                            } else {
+                                logoutSection.classList.add('hidden');
+                            }
+                        } else {
+                            loginModal.classList.add('opacity-0');
+                            loginModal.querySelector('div').classList.add('scale-90');
+                            setTimeout(() => {
+                                loginModal.classList.add('hidden');
+                            }, 300);
+                        }
+                    }
+
+                    function updateMemberUI() {
+                        const savedData = JSON.parse(localStorage.getItem('dsMemberData'));
+                        if (savedData && savedData.nama) {
+                            loginBtnText.textContent = `Hai, ${savedData.nama.split(' ')[0]}`;
+                            loginBtn.classList.replace('bg-red-700/80', 'bg-cyan-600/80');
+
+                            // Auto-fill order fields if it's currently open or will be opened
+                            if (orderNamaField) orderNamaField.value = savedData.nama;
+                            if (orderWAField) orderWAField.value = savedData.wa;
+                            if (orderAlamatField) orderAlamatField.value = savedData.alamat;
+                        } else {
+                            loginBtnText.textContent = 'Member Area';
+                            loginBtn.classList.replace('bg-cyan-600/80', 'bg-red-700/80');
+                        }
+                    }
+
+                    loginBtn.addEventListener('click', toggleLoginModal);
+                    closeLoginModal.addEventListener('click', toggleLoginModal);
+                    loginModal.addEventListener('click', (e) => {
+                        if (e.target === loginModal) toggleLoginModal();
+                    });
+
+                    saveLoginData.addEventListener('click', () => {
+                        const data = {
+                            nama: loginNama.value,
+                            wa: loginWA.value,
+                            alamat: loginAlamat.value
+                        };
+                        if (data.nama && data.wa) {
+                            localStorage.setItem('dsMemberData', JSON.stringify(data));
+                            updateMemberUI();
+                            toggleLoginModal();
+                            alert('Data Member Berhasil Disimpan! Silakan lanjutkan belanja.');
+                        } else {
+                            alert('Mohon isi Nama dan Nomor WhatsApp Anda.');
+                        }
+                    });
+
+                    logoutBtn.addEventListener('click', () => {
+                        if (confirm('Apakah Anda yakin ingin menghapus data member dari perangkat ini?')) {
+                            localStorage.removeItem('dsMemberData');
+                            loginNama.value = '';
+                            loginWA.value = '';
+                            loginAlamat.value = '';
+                            updateMemberUI();
+                            toggleLoginModal();
+                        }
+                    });
+
+                    // Run on load
+                    updateMemberUI();
+
+                    // Modified openOrderModal to auto-fill
+                    const originalOpenOrderModal = openOrderModal;
+                    openOrderModal = function () {
+                        updateMemberUI(); // Ensure data is fresh
+                        originalOpenOrderModal();
+                    };
+
+                    // Info Modal Logic
+                    const infoModal = document.getElementById('infoModal');
+                    const infoBtn = document.getElementById('infoBtn');
+                    const closeModal = document.getElementById('closeModal');
+                    const closeModalBtn = document.getElementById('closeModalBtn');
+                    const modalContent = infoModal.querySelector('div');
+
+                    function openInfoModal() {
+                        infoModal.classList.remove('hidden');
+                        // Small delay to allow display:block to apply before opacity transition
+                        setTimeout(() => {
+                            infoModal.classList.remove('opacity-0');
+                            modalContent.classList.remove('scale-90');
+                            modalContent.classList.add('scale-100');
+                        }, 10);
+                    }
+
+                    function closeInfoModal() {
+                        infoModal.classList.add('opacity-0');
+                        modalContent.classList.remove('scale-100');
+                        modalContent.classList.add('scale-90');
+
+                        setTimeout(() => {
+                            infoModal.classList.add('hidden');
+                        }, 300);
+                    }
+
+                    if (infoBtn) {
+                        infoBtn.addEventListener('click', openInfoModal);
+                    }
+
+                    if (closeModal) {
+                        closeModal.addEventListener('click', closeInfoModal);
+                    }
+
+                    if (closeModalBtn) {
+                        closeModalBtn.addEventListener('click', closeInfoModal);
+                    }
+
+                    // Close on click outside
+                    infoModal.addEventListener('click', (e) => {
+                        if (e.target === infoModal) {
+                            closeInfoModal();
+                        }
+                    });
+
+
+
+                    // Initialize AOS
+                    AOS.init({
+                        duration: 800,
+                        easing: 'ease-out-cubic',
+                        once: false,
+                        mirror: true,
+                        offset: 120
+                    });
+
+                    // Dark mode toggle
+                    const darkModeToggle = document.getElementById('darkModeToggle');
+                    const html = document.documentElement;
+                    const icon = darkModeToggle.querySelector('i');
+
+                    // Check for saved dark mode preference
+                    if (localStorage.getItem('darkMode') === 'true') {
+                        html.classList.add('dark');
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                    }
+
+                    darkModeToggle.addEventListener('click', () => {
+                        html.classList.toggle('dark');
+
+                        if (html.classList.contains('dark')) {
+                            icon.classList.remove('fa-moon');
+                            icon.classList.add('fa-sun');
+                            localStorage.setItem('darkMode', 'true');
+                        } else {
+                            icon.classList.remove('fa-sun');
+                            icon.classList.add('fa-moon');
+                            localStorage.setItem('darkMode', 'false');
+                        }
+                    });
+
+                    // Mobile menu toggle
+                    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                    const mobileMenu = document.getElementById('mobileMenu');
+
+                    mobileMenuToggle.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('hidden');
+                    });
+
+                    // Close mobile menu when clicking on links
+                    const mobileLinks = mobileMenu.querySelectorAll('a');
+                    mobileLinks.forEach(link => {
+                        link.addEventListener('click', () => {
+                            mobileMenu.classList.add('hidden');
+                        });
+                    });
+
+                    // Header scroll effect
+                    const header = document.querySelector('header');
+                    let lastScroll = 0;
+
+                    window.addEventListener('scroll', () => {
+                        const currentScroll = window.pageYOffset;
+
+                        if (currentScroll > 100) {
+                            header.classList.add('shadow-lg');
+                        } else {
+                            header.classList.remove('shadow-lg');
+                        }
+
+                        lastScroll = currentScroll;
+                    });
+
+                    // Smooth scroll for anchor links
+                    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const target = document.querySelector(this.getAttribute('href'));
+                            if (target) {
+                                target.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
+                        });
+                    });
+
+                    // Add loading animation
+                    window.addEventListener('load', () => {
+                        document.body.style.opacity = '0';
+                        setTimeout(() => {
+                            document.body.style.transition = 'opacity 0.5s';
+                            document.body.style.opacity = '1';
+                        }, 100);
+                    });
+
+                    // Interactive button animations
+                    const buttons = document.querySelectorAll('button, a');
+                    buttons.forEach(button => {
+                        button.addEventListener('mouseenter', function () {
+                            this.style.transform = 'scale(1.05)';
+                        });
+
+                        button.addEventListener('mouseleave', function () {
+                            this.style.transform = 'scale(1)';
+                        });
+                    });
+
+                    // Back to Top Logic
+                    const backToTop = document.getElementById('backToTop');
+                    window.addEventListener('scroll', () => {
+                        if (window.pageYOffset > 300) {
+                            backToTop.classList.add('show');
+                        } else {
+                            backToTop.classList.remove('show');
+                        }
+                    });
+
+                    backToTop.addEventListener('click', () => {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    });
+
+                    // --- HIDDEN GAME LOGIC BY ANTIGRAVITY ---
+                    const gameArea = document.getElementById('predatorGameArea');
+                    const gameTrigger = document.getElementById('gameTrigger');
+                    const closeGame = document.getElementById('closeGame');
+                    const canvas = document.getElementById('gameCanvas');
+                    const ctx = canvas.getContext('2d');
+                    const scoreEl = document.getElementById('gameScoreValue');
+                    const sharkCursor = document.getElementById('gameSharkCursor');
+
+                    let score = 0;
+                    let gameActive = false;
+                    let mouseX = 0;
+                    let mouseY = 0;
+                    let fishes = [];
+                    let bubbles = [];
+
+                    function initGame() {
+                        canvas.width = window.innerWidth * 0.9;
+                        canvas.height = window.innerHeight * 0.8;
+                        fishes = [];
+                        bubbles = [];
+                        score = 0;
+                        scoreEl.textContent = score;
+
+                        // Initial fishes
+                        for (let i = 0; i < 15; i++) spawnFish();
+                        // Initial bubbles
+                        for (let i = 0; i < 30; i++) spawnBubble();
+                    }
+
+                    function spawnFish() {
+                        fishes.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            speed: 2 + Math.random() * 3,
+                            type: ['🐠', '🐡', '🐟'][Math.floor(Math.random() * 3)],
+                            size: 30 + Math.random() * 20,
+                            direction: Math.random() * Math.PI * 2
+                        });
+                    }
+
+                    function spawnBubble() {
+                        bubbles.push({
+                            x: Math.random() * canvas.width,
+                            y: canvas.height + 10,
+                            speed: 1 + Math.random() * 2,
+                            radius: 2 + Math.random() * 10,
+                            opacity: 0.1 + Math.random() * 0.4
+                        });
+                    }
+
+                    let bloodParticles = [];
+
+                    function spawnBlood(x, y, isInline = false) {
+                        for (let i = 0; i < 8; i++) {
+                            bloodParticles.push({
+                                x: x,
+                                y: y,
+                                vx: (Math.random() - 0.5) * 5,
+                                vy: (Math.random() - 0.5) * 5,
+                                life: 1.0,
+                                isInline: isInline
+                            });
+                        }
+                        // Mouth open effect
+                        sharkCursor.textContent = '🤤';
+                        setTimeout(() => { sharkCursor.textContent = '🦈'; }, 200);
+                    }
+
+                    function draw() {
+                        if (!gameActive) return;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const rect = canvas.getBoundingClientRect();
+
+                        // Draw Bubbles
+                        bubbles.forEach((b, index) => {
+                            b.y -= b.speed;
+                            ctx.beginPath();
+                            ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(255, 255, 255, ${b.opacity})`;
+                            ctx.fill();
+                            if (b.y < -20) bubbles.splice(index, 1);
+                        });
+                        if (bubbles.length < 30) spawnBubble();
+
+                        // Draw Blood
+                        bloodParticles.forEach((p, index) => {
+                            if (!p.isInline) {
+                                p.x += p.vx;
+                                p.y += p.vy;
+                                p.life -= 0.02;
+                                ctx.fillStyle = `rgba(220, 38, 38, ${p.life})`;
+                                ctx.beginPath();
+                                ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                                ctx.fill();
+                                if (p.life <= 0) bloodParticles.splice(index, 1);
+                            }
+                        });
+
+                        // Draw Fishes
+                        fishes.forEach((f, index) => {
+                            f.x += Math.cos(f.direction) * f.speed;
+                            f.y += Math.sin(f.direction) * f.speed;
+
+                            if (f.x < 0 || f.x > canvas.width) f.direction = Math.PI - f.direction;
+                            if (f.y < 0 || f.y > canvas.height) f.direction = -f.direction;
+
+                            ctx.font = `${f.size}px Arial`;
+                            ctx.fillText(f.type, f.x, f.y);
+
+                            const dist = Math.hypot(f.x - (mouseX - rect.left), f.y - (mouseY - rect.top));
+                            if (dist < 40) {
+                                spawnBlood(f.x, f.y);
+                                fishes.splice(index, 1);
+                                score++;
+                                scoreEl.textContent = score;
+                                spawnFish();
+                            }
+                        });
+
+                        requestAnimationFrame(draw);
+                    }
+
+                    gameTrigger.addEventListener('click', () => {
+                        gameActive = true;
+                        gameArea.classList.add('active');
+                        sharkCursor.style.display = 'block';
+                        initGame();
+                        draw();
+                    });
+
+                    closeGame.addEventListener('click', () => {
+                        gameActive = false;
+                        gameArea.classList.remove('active');
+                        sharkCursor.style.display = 'none';
+                        document.body.style.overflow = '';
+                    });
+
+                    window.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && gameActive) {
+                            gameActive = false;
+                            gameArea.classList.remove('active');
+                            sharkCursor.style.display = 'none';
+                        }
+                    });
+
+                    window.addEventListener('mousemove', (e) => {
+                        if (gameActive) {
+                            mouseX = e.clientX;
+                            mouseY = e.clientY;
+                            sharkCursor.style.left = e.clientX + 'px';
+                            sharkCursor.style.top = e.clientY + 'px';
+                        }
+                    });
+
+                    // --- INLINE GAME LOGIC ---
+                    const inlineCanvas = document.getElementById('inlineCanvas');
+                    const inlineCtx = inlineCanvas.getContext('2d');
+                    const inlineScoreEl = document.getElementById('inlineScore');
+                    const inlineContainer = document.getElementById('inlineGameContainer');
+                    let inlineScore = 0;
+                    let inlineFishes = [];
+                    let inlineBubbles = [];
+                    let imouseX = 0;
+                    let imouseY = 0;
+
+                    function initInlineGame() {
+                        inlineCanvas.width = inlineCanvas.offsetWidth;
+                        inlineCanvas.height = inlineCanvas.offsetHeight;
+                        for (let i = 0; i < 8; i++) spawnInlineFish();
+                        for (let i = 0; i < 15; i++) spawnInlineBubble();
+                    }
+
+                    function spawnInlineFish() {
+                        inlineFishes.push({
+                            x: Math.random() * inlineCanvas.width,
+                            y: Math.random() * inlineCanvas.height,
+                            speed: 1 + Math.random() * 2,
+                            type: ['🐠', '🐡', '🐟'][Math.floor(Math.random() * 3)],
+                            size: 25,
+                            direction: Math.random() * Math.PI * 2
+                        });
+                    }
+
+                    function spawnInlineBubble() {
+                        inlineBubbles.push({
+                            x: Math.random() * inlineCanvas.width,
+                            y: inlineCanvas.height + 10,
+                            speed: 0.5 + Math.random() * 1.5,
+                            radius: 1 + Math.random() * 5,
+                            opacity: 0.1 + Math.random() * 0.3
+                        });
+                    }
+
+                    function drawInline() {
+                        inlineCtx.clearRect(0, 0, inlineCanvas.width, inlineCanvas.height);
+                        const rect = inlineCanvas.getBoundingClientRect();
+
+                        // Bubbles
+                        inlineBubbles.forEach((b, index) => {
+                            b.y -= b.speed;
+                            inlineCtx.beginPath();
+                            inlineCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                            inlineCtx.fillStyle = `rgba(255, 255, 255, ${b.opacity})`;
+                            inlineCtx.fill();
+                            if (b.y < -10) inlineBubbles.splice(index, 1);
+                        });
+                        if (inlineBubbles.length < 15) spawnInlineBubble();
+
+                        // Draw Blood
+                        bloodParticles.forEach((p, index) => {
+                            if (p.isInline) {
+                                p.x += p.vx;
+                                p.y += p.vy;
+                                p.life -= 0.02;
+                                inlineCtx.fillStyle = `rgba(220, 38, 38, ${p.life})`;
+                                inlineCtx.beginPath();
+                                inlineCtx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                                inlineCtx.fill();
+                                if (p.life <= 0) bloodParticles.splice(index, 1);
+                            }
+                        });
+
+                        // Fishes
+                        inlineFishes.forEach((f, index) => {
+                            f.x += Math.cos(f.direction) * f.speed;
+                            f.y += Math.sin(f.direction) * f.speed;
+                            if (f.x < 0 || f.x > inlineCanvas.width) f.direction = Math.PI - f.direction;
+                            if (f.y < 0 || f.y > inlineCanvas.height) f.direction = -f.direction;
+                            inlineCtx.font = `${f.size}px Arial`;
+                            inlineCtx.fillText(f.type, f.x, f.y);
+
+                            const dist = Math.hypot(f.x - (imouseX - rect.left), f.y - (imouseY - rect.top));
+                            if (dist < 30) {
+                                spawnBlood(f.x, f.y, true);
+                                inlineFishes.splice(index, 1);
+                                inlineScore++;
+                                inlineScoreEl.textContent = inlineScore;
+                                spawnInlineFish();
+                            }
+                        });
+
+                        requestAnimationFrame(drawInline);
+                    }
+
+                    window.addEventListener('load', () => {
+                        // Preloader Logic
+                        const preloader = document.getElementById('preloader');
+                        if (preloader) {
+                            setTimeout(() => {
+                                preloader.classList.add('opacity-0');
+                                setTimeout(() => {
+                                    preloader.style.display = 'none';
+                                }, 1000);
+                            }, 3500); // 3.5s to match animation mostly
+                        }
+                        initInlineGame();
+                        drawInline();
+                    });
+
+                    inlineContainer.addEventListener('mouseenter', () => {
+                        sharkCursor.style.display = 'block';
+                    });
+
+                    inlineContainer.addEventListener('mouseleave', () => {
+                        if (!gameActive) {
+                            sharkCursor.style.display = 'none';
+                        }
+                    });
+
+                    inlineContainer.addEventListener('mousemove', (e) => {
+                        imouseX = e.clientX;
+                        imouseY = e.clientY;
+                        sharkCursor.style.left = e.clientX + 'px';
+                        sharkCursor.style.top = e.clientY + 'px';
+                    });
+
+                    window.addEventListener('resize', () => {
+                        if (inlineCanvas.offsetWidth > 0) {
+                            inlineCanvas.width = inlineCanvas.offsetWidth;
+                            inlineCanvas.height = inlineCanvas.offsetHeight;
+                        }
+                    });
+                </script>
+</body>
+
+</html>

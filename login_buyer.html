@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛍️ Buyer Login - DS Fish Hunter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
+            --secondary-gradient: linear-gradient(135deg, #023e8a 0%, #0077b6 100%);
+            --dark-bg: #050505;
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --gold: #daa520;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #020202;
+            background-image:
+                radial-gradient(circle at 50% 0%, #002040 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, #001020 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            z-index: 10;
+        }
+
+        .auth-card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 180, 216, 0.2);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 180, 216, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .auth-card:hover {
+            border-color: rgba(0, 180, 216, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(0, 180, 216, 0.2);
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 180, 216, 0.5));
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 10px rgba(0, 180, 216, 0.5));
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 20px rgba(0, 180, 216, 0.8));
+                transform: scale(1.05);
+            }
+        }
+
+        .logo-area h1 {
+            margin-top: 1rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-area p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1rem 1rem 3rem;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00b4d8;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .form-input:focus+.form-icon {
+            color: #00b4d8;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-submit:hover::after {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 180, 216, 0.3);
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .switch-auth a {
+            color: #00b4d8;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .alert-box {
+            background: rgba(0, 180, 216, 0.1);
+            border: 1px solid rgba(0, 180, 216, 0.2);
+            color: #00b4d8;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: fadeIn 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Bubbles Background */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 180, 216, 0.2), transparent);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-120vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+
+    <div class="container">
+        <!-- LOGIN FORM -->
+        <div class="auth-card" id="loginCard">
+            <div class="logo-area">
+                <i class="fas fa-shopping-cart logo-icon"></i>
+                <h1>Login Pembeli</h1>
+                <p>Masuk untuk mulai berbelanja</p>
+            </div>
+
+            <div class="alert-box" id="loginAlert"
+                style="display: none; color: #ff4d4d; border-color: #ff4d4d; background: rgba(255,0,0,0.1);">
+                <i class="fas fa-exclamation-circle"></i> <span>Username atau password salah!</span>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="text" id="loginUser" class="form-input" placeholder="Username" required>
+                    <i class="fas fa-user form-icon"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPass" class="form-input" placeholder="Password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                </div>
+                <button type="submit" class="btn-submit">MASUK SEKARANG <i class="fas fa-arrow-right"></i></button>
+            </form>
+
+            <div class="switch-auth">
+                Belum punya akun? <a onclick="toggleForm('register')">Daftar Akun Baru</a>
+            </div>
+            <div class="switch-auth" style="margin-top: 0.5rem;">
+                <a href="index.html" style="color: #666; font-size: 0.8rem;"><i class="fas fa-chevron-left"></i> Kembali
+                    ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div class="auth-card hidden" id="registerCard">
+            <div class="logo-area">
+                <i class="fas fa-user-plus logo-icon"></i>
+                <h1>Registrasi Pembeli</h1>
+                <p>Buat akun untuk belanja ikan predator</p>
+            </div>
+
+            <div class="alert-box" id="registerAlert"
+                style="display: none; color: #ff4d4d; border-color: #ff4d4d; background: rgba(255,0,0,0.1);">
+                <i class="fas fa-exclamation-circle"></i> <span>Username sudah digunakan!</span>
+            </div>
+            <div class="alert-box" id="registerSuccess"
+                style="display: none; background: rgba(0, 255, 0, 0.1); border-color: rgba(0, 255, 0, 0.2); color: #00ff00;">
+                <i class="fas fa-check-circle"></i> <span>Registrasi berhasil! Silahkan login.</span>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <input type="text" id="regUser" class="form-input" placeholder="Username Baru" required>
+                    <i class="fas fa-user form-icon"></i>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="regName" class="form-input" placeholder="Nama Lengkap" required>
+                    <i class="fas fa-id-card form-icon"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPass" class="form-input" placeholder="Password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPassConfirm" class="form-input" placeholder="Konfirmasi Password"
+                        required>
+                    <i class="fas fa-check-circle form-icon"></i>
+                </div>
+                <button type="submit" class="btn-submit">DAFTAR SEKARANG</button>
+            </form>
+
+            <div class="switch-auth">
+                Sudah punya akun? <a onclick="toggleForm('login')">Login disini</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ANIMATIONS ---
+        // Create bubbles dynamically
+        function createBubbles() {
+            const container = document.getElementById('bubbles');
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                const size = Math.random() * 50 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(bubble);
+            }
+        }
+        createBubbles();
+
+        // --- AUTH LOGIC (MOCK) ---
+
+        // Helper to check/get buyers from localStorage
+        function getBuyers() {
+            const stored = localStorage.getItem('fishHunterBuyers');
+            if (stored) return JSON.parse(stored);
+
+            // Default buyer if none exist
+            const defaultBuyer = [{ username: 'buyer', password: '123', name: 'Pembeli Setia' }];
+            localStorage.setItem('fishHunterBuyers', JSON.stringify(defaultBuyer));
+            return defaultBuyer;
+        }
+
+        function toggleForm(type) {
+            const loginCard = document.getElementById('loginCard');
+            const registerCard = document.getElementById('registerCard');
+            const loginAlert = document.getElementById('loginAlert');
+            const registerAlert = document.getElementById('registerAlert');
+            const registerSuccess = document.getElementById('registerSuccess');
+
+            // Hide alerts
+            loginAlert.style.display = 'none';
+            registerAlert.style.display = 'none';
+            registerSuccess.style.display = 'none';
+
+            if (type === 'register') {
+                loginCard.classList.add('hidden');
+                registerCard.classList.remove('hidden');
+            } else {
+                loginCard.classList.remove('hidden');
+                registerCard.classList.add('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userIn = document.getElementById('loginUser').value;
+            const passIn = document.getElementById('loginPass').value;
+            const alertBox = document.getElementById('loginAlert');
+
+            const buyers = getBuyers();
+            const foundUser = buyers.find(a => a.username === userIn && a.password === passIn);
+
+            if (foundUser) {
+                // SUCCESS
+                localStorage.setItem('buyerLoggedIn', 'true');
+                localStorage.setItem('currentBuyerUser', JSON.stringify(foundUser)); // Save full user obj
+                alertBox.style.display = 'none';
+
+                // Add loading effect
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMUAT...';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Redirect to HOME
+                }, 1000);
+            } else {
+                // FAIL
+                alertBox.style.display = 'flex';
+                alertBox.querySelector('span').innerText = 'Username atau password salah!';
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const userIn = document.getElementById('regUser').value;
+            const nameIn = document.getElementById('regName').value;
+            const passIn = document.getElementById('regPass').value;
+            const passConfirmIn = document.getElementById('regPassConfirm').value;
+            const alertBox = document.getElementById('registerAlert');
+            const successBox = document.getElementById('registerSuccess');
+
+            // Simple validation
+            if (passIn !== passConfirmIn) {
+                alertBox.style.display = 'flex';
+                alertBox.querySelector('span').innerText = 'Password tidak cocok!';
+                successBox.style.display = 'none';
+                return;
+            }
+
+            const buyers = getBuyers();
+
+            // Check if username exists
+            if (buyers.find(a => a.username === userIn)) {
+                alertBox.style.display = 'flex';
+                alertBox.querySelector('span').innerText = 'Username sudah digunakan!';
+                successBox.style.display = 'none';
+                return;
+            }
+
+            // Save new buyer
+            buyers.push({ username: userIn, password: passIn, name: nameIn });
+            localStorage.setItem('fishHunterBuyers', JSON.stringify(buyers));
+
+            // Success feedback
+            alertBox.style.display = 'none';
+            successBox.style.display = 'flex';
+            document.getElementById('registerForm').reset();
+
+            setTimeout(() => {
+                toggleForm('login');
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
