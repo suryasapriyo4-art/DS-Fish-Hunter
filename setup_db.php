@@ -1,39 +1,29 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
+// Setup script for SQLite
+require_once 'db_connect.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password);
+echo "Memulai inisialisasi database SQLite...\n";
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+    // Database and table creation is already handled in db_connect.php
+    // But we can add a default admin if needed
+    $username = 'admin';
+    $password = password_hash('admin123', PASSWORD_DEFAULT);
+
+    $stmt = $conn->prepare("SELECT id FROM admins WHERE username = :username");
+    $stmt->execute([':username' => $username]);
+
+    if (!$stmt->fetch()) {
+        $stmt = $conn->prepare("INSERT INTO admins (username, password) VALUES (:username, :password)");
+        $stmt->execute([':username' => $username, ':password' => $password]);
+        echo "Akun admin default berhasil dibuat: admin / admin123\n";
+    } else {
+        echo "Akun admin sudah ada.\n";
+    }
+
+    echo "Inisialisasi selesai. Database tersimpan di ds_fish_hunter.sqlite\n";
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage() . "\n";
 }
-
-// Create database
-$sql = "CREATE DATABASE IF NOT EXISTS ds_fish_hunter";
-if ($conn->query($sql) === TRUE) {
-    echo "Database created successfully\n";
-} else {
-    echo "Error creating database: " . $conn->error . "\n";
-}
-
-$conn->select_db("ds_fish_hunter");
-
-// Create admins table
-$sql = "CREATE TABLE IF NOT EXISTS admins (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)";
-
-if ($conn->query($sql) === TRUE) {
-    echo "Table admins created successfully\n";
-} else {
-    echo "Error creating table: " . $conn->error . "\n";
-}
-
-$conn->close();
 ?>
