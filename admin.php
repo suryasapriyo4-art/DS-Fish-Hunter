@@ -514,12 +514,19 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                     <span style="color: #ff4d4d; font-weight: 600;">Secure</span>
                 </p>
             </div>
-            <button
-                style="padding: 1rem 2rem; background: var(--primary-gradient); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(255, 15, 15, 0.2); transition: all 0.3s;"
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 30px rgba(255, 15, 15, 0.4)';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(255, 15, 15, 0.2)';">
-                <i class="fas fa-plus-circle"></i> Tambah Koleksi Baru
-            </button>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="forceResetDB()"
+                    style="padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #aaa; cursor: pointer; transition: all 0.3s;"
+                    title="Refresh Data 1 Miliar">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button
+                    style="padding: 1rem 2rem; background: var(--primary-gradient); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(255, 15, 15, 0.2); transition: all 0.3s;"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 30px rgba(255, 15, 15, 0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(255, 15, 15, 0.2)';">
+                    <i class="fas fa-plus-circle"></i> Tambah Koleksi Baru
+                </button>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -628,7 +635,10 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
     <script>
         // --- MOCK DATA SEEDING (Since we don't have a real backend) ---
         function seedMockData() {
-            if (!localStorage.getItem('adminOrders')) {
+            let currentOrders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+            const hasLegacy = currentOrders.some(o => o.id === 'TRX-LEGACY-01');
+
+            if (!hasLegacy) {
                 const mockOrders = [
                     {
                         id: 'TRX-LEGACY-01',
@@ -731,6 +741,15 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                     }
                 ];
                 localStorage.setItem('adminOrders', JSON.stringify(mockOrders));
+            }
+        }
+
+        function forceResetDB() {
+            if (confirm('⚠️ PERINGATAN: Ini akan merestorasi database ke pengaturan awal (Data 1 Miliar). Lanjutkan?')) {
+                localStorage.removeItem('adminOrders');
+                localStorage.removeItem('fishStock');
+                localStorage.removeItem('adminLogs');
+                location.reload();
             }
         }
 

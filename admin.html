@@ -721,9 +721,16 @@
                     Eksekutif</h1>
                 <p style="color: #666; font-size: 0.95rem;">Selamat datang di panel kontrol pusat DS Fish Hunter.</p>
             </div>
-            <div class="date-badge">
-                <i class="far fa-calendar-alt"></i>
-                <span id="currentDate">Senin, 1 Jan 2026</span>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button onclick="forceResetDB()"
+                    style="padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #666; cursor: pointer; transition: all 0.3s;"
+                    title="Refresh Data 1 Miliar">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <div class="date-badge">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="currentDate">Senin, 1 Jan 2026</span>
+                </div>
             </div>
         </div>
 
@@ -1238,7 +1245,10 @@
             if (!localStorage.getItem('adminExpenses')) localStorage.setItem('adminExpenses', JSON.stringify([]));
 
             // Seed Legacy Transactions for 1 Billion Revenue
-            if (!localStorage.getItem('adminOrders') || JSON.parse(localStorage.getItem('adminOrders')).length < 5) {
+            let currentOrders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+            const hasLegacy = currentOrders.some(o => o.id === 'TRX-LEGACY-01');
+
+            if (!hasLegacy) {
                 const legacyOrders = [
                     {
                         id: 'TRX-LEGACY-01',
@@ -1333,6 +1343,15 @@
             }
 
             refreshDataState();
+        }
+
+        function forceResetDB() {
+            if (confirm('⚠️ PERINGATAN: Ini akan merestorasi database ke pengaturan awal (Data 1 Miliar). Lanjutkan?')) {
+                localStorage.removeItem('adminOrders');
+                localStorage.removeItem('fishStock');
+                localStorage.removeItem('adminLogs');
+                location.reload();
+            }
         }
 
         function refreshDataState() {
@@ -1460,7 +1479,11 @@
                 }
             });
 
-            document.getElementById('dashRevenue').innerText = formatRp(revenue);
+            if (revenue >= 1000000000) {
+                document.getElementById('dashRevenue').innerText = 'Rp ' + (revenue / 1000000000).toFixed(1) + ' Miliar';
+            } else {
+                document.getElementById('dashRevenue').innerText = formatRp(revenue);
+            }
             document.getElementById('dashSalesCount').innerText = successOrders;
             document.getElementById('dashStockCount').innerText = db.products.reduce((a, b) => a + parseInt(b.stock), 0);
 
