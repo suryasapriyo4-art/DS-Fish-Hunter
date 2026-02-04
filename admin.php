@@ -511,7 +511,8 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                     style="font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                     Ringkasan Eksekutif</h1>
                 <p style="color: #666; font-size: 1rem; margin-top: 0.2rem;">Otoritas Terpusat DS Fish Hunter • Sesi:
-                    <span style="color: #ff4d4d; font-weight: 600;">Secure</span></p>
+                    <span style="color: #ff4d4d; font-weight: 600;">Secure</span>
+                </p>
             </div>
             <button
                 style="padding: 1rem 2rem; background: var(--primary-gradient); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(255, 15, 15, 0.2); transition: all 0.3s;"
@@ -530,7 +531,7 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         Koleksi</h3>
                     <i class="fas fa-fish" style="font-size: 1.5rem; color: #ff0f0f; opacity: 0.5;"></i>
                 </div>
-                <div class="value" style="font-size: 3rem; line-height: 1;">128</div>
+                <div class="value" id="statTotalKoleksi" style="font-size: 3rem; line-height: 1;">128</div>
                 <div style="margin-top: 1rem;">
                     <span class="status success"
                         style="background: rgba(0, 255, 0, 0.1); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -547,7 +548,7 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         Pesanan</h3>
                     <i class="fas fa-shopping-cart" style="font-size: 1.5rem; color: #00c6ff; opacity: 0.5;"></i>
                 </div>
-                <div class="value" style="font-size: 3rem; line-height: 1;">45</div>
+                <div class="value" id="statTotalPesanan" style="font-size: 3rem; line-height: 1;">45</div>
                 <div style="margin-top: 1rem;">
                     <span class="status success"
                         style="background: rgba(0, 255, 0, 0.1); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">
@@ -564,8 +565,7 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         Pendapatan</h3>
                     <i class="fas fa-wallet" style="font-size: 1.5rem; color: var(--gold); opacity: 0.5;"></i>
                 </div>
-                <div class="value" style="color: var(--gold); font-size: 2.5rem; line-height: 1.2;">Rp <span
-                        style="font-weight: 800;">25.4JT</span></div>
+                <div class="value" style="color: var(--gold); font-size: 2.5rem; line-height: 1.2;"><span id="statPendapatan">Rp 0</span></div>
                 <div style="margin-top: 1rem; color: #666; font-size: 0.8rem;">
                     Total Akumulasi Transaksi
                 </div>
@@ -630,6 +630,50 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
             if (!localStorage.getItem('adminOrders')) {
                 const mockOrders = [
                     {
+                        id: 'TRX-LEGACY-01',
+                        customer: 'Investor Ekuitas',
+                        item: 'Borongan Koleksi Arwana (100 Ekor)',
+                        quantity: 100,
+                        price: 'Rp 500.000.000',
+                        date: '2025-10-15',
+                        status: 'Approved',
+                        address: 'Pusat Bisnis SCBD, Jakarta',
+                        phone: '0811-000-0001'
+                    },
+                    {
+                        id: 'TRX-LEGACY-02',
+                        customer: 'Kolektor Sultan',
+                        item: 'Channa Barca Grade SSS (Indukan)',
+                        quantity: 1,
+                        price: 'Rp 250.000.000',
+                        date: '2025-11-20',
+                        status: 'Approved',
+                        address: 'Menteng Heritage, Jakarta',
+                        phone: '0812-999-8888'
+                    },
+                    {
+                        id: 'TRX-LEGACY-03',
+                        customer: 'Aquascape Master',
+                        item: 'Paket Predator Monster Giant',
+                        quantity: 10,
+                        price: 'Rp 150.000.000',
+                        date: '2025-12-05',
+                        status: 'Approved',
+                        address: 'Andara Garden, Depok',
+                        phone: '0822-777-6666'
+                    },
+                    {
+                        id: 'TRX-LEGACY-04',
+                        customer: 'Exotic Fish Keeper',
+                        item: 'Arapaima Gigas & Alligator Platinum',
+                        quantity: 5,
+                        price: 'Rp 100.000.000',
+                        date: '2025-12-25',
+                        status: 'Approved',
+                        address: 'Pondok Indah Regency, Jakarta',
+                        phone: '0813-555-4444'
+                    },
+                    {
                         id: 'TRX-001',
                         customer: 'Budi Santoso',
                         item: 'Channa Barca (High Quality)',
@@ -639,39 +683,6 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         status: 'Approved',
                         address: 'Jl. Merdeka No. 12, Jakarta Selatan',
                         phone: '0812-3456-7890'
-                    },
-                    {
-                        id: 'TRX-002',
-                        customer: 'Siti Aminah',
-                        item: 'Arwana Super Red',
-                        quantity: 1,
-                        price: 'Rp 8.500.000',
-                        date: '2025-01-29',
-                        status: 'Pending',
-                        address: 'Komp. Gading Serpong Blok A1, Tangerang',
-                        phone: '0819-8765-4321'
-                    },
-                    {
-                        id: 'TRX-003',
-                        customer: 'Doni Pratama',
-                        item: 'P-Bass Monoculus',
-                        quantity: 5,
-                        price: 'Rp 6.000.000',
-                        date: '2025-01-29',
-                        status: 'Rejected',
-                        address: 'Jl. Ahmad Yani No. 45, Surabaya',
-                        phone: '0857-1122-3344'
-                    },
-                    {
-                        id: 'TRX-004',
-                        customer: 'Reza Rahardian',
-                        item: 'Arapaima Gigas Baby',
-                        quantity: 3,
-                        price: 'Rp 10.500.000',
-                        date: '2025-01-30',
-                        status: 'Pending',
-                        address: 'Villa Dago Pakar, Bandung',
-                        phone: '0813-9988-7766'
                     }
                 ];
                 localStorage.setItem('adminOrders', JSON.stringify(mockOrders));
@@ -746,9 +757,27 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
         }
 
         function updateStats() {
-            // Update stats logic here if needed based on real data
-            const total = orders.length;
-            const pending = orders.filter(o => o.status === 'Pending').length;
+            let totalRevenue = 0;
+            let approvedOrders = 0;
+            
+            orders.forEach(o => {
+                if (o.status === 'Approved') {
+                    const price = parseInt(o.price.replace(/[^0-9]/g, '')) || 0;
+                    totalRevenue += price;
+                    approvedOrders++;
+                }
+            });
+
+            const revenueEl = document.getElementById('statPendapatan');
+            if (totalRevenue >= 1000000000) {
+                revenueEl.innerText = 'Rp ' + (totalRevenue / 1000000000).toFixed(1) + ' Miliar';
+            } else if (totalRevenue >= 1000000) {
+                revenueEl.innerText = 'Rp ' + (totalRevenue / 1000000).toFixed(1) + ' Juta';
+            } else {
+                revenueEl.innerText = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+            }
+
+            document.getElementById('statTotalPesanan').innerText = orders.length;
         }
 
         // --- MODAL LOGIC ---
