@@ -1237,6 +1237,57 @@
             if (!localStorage.getItem('adminLogs')) localStorage.setItem('adminLogs', JSON.stringify([]));
             if (!localStorage.getItem('adminExpenses')) localStorage.setItem('adminExpenses', JSON.stringify([]));
 
+            // Seed Legacy Transactions for 1 Billion Revenue
+            if (!localStorage.getItem('adminOrders') || JSON.parse(localStorage.getItem('adminOrders')).length < 5) {
+                const legacyOrders = [
+                    {
+                        id: 'TRX-LEGACY-01',
+                        customer: 'Investor Ekuitas',
+                        item: 'Borongan Koleksi Arwana (100 Ekor)',
+                        quantity: 100,
+                        price: 'Rp 500.000.000',
+                        date: '2025-10-15',
+                        status: 'Approved',
+                        address: 'Pusat Bisnis SCBD, Jakarta',
+                        phone: '0811-000-0001'
+                    },
+                    {
+                        id: 'TRX-LEGACY-02',
+                        customer: 'Kolektor Sultan',
+                        item: 'Channa Barca Grade SSS (Indukan)',
+                        quantity: 1,
+                        price: 'Rp 250.000.000',
+                        date: '2025-11-20',
+                        status: 'Approved',
+                        address: 'Menteng Heritage, Jakarta',
+                        phone: '0812-999-8888'
+                    },
+                    {
+                        id: 'TRX-LEGACY-03',
+                        customer: 'Aquascape Master',
+                        item: 'Paket Predator Monster Giant',
+                        quantity: 10,
+                        price: 'Rp 150.000.000',
+                        date: '2025-12-05',
+                        status: 'Approved',
+                        address: 'Andara Garden, Depok',
+                        phone: '0822-777-6666'
+                    },
+                    {
+                        id: 'TRX-LEGACY-04',
+                        customer: 'Exotic Fish Keeper',
+                        item: 'Arapaima Gigas & Alligator Platinum',
+                        quantity: 5,
+                        price: 'Rp 100.000.000',
+                        date: '2025-12-25',
+                        status: 'Approved',
+                        address: 'Pondok Indah Regency, Jakarta',
+                        phone: '0813-555-4444'
+                    }
+                ];
+                localStorage.setItem('adminOrders', JSON.stringify(legacyOrders));
+            }
+
             refreshDataState();
         }
 
