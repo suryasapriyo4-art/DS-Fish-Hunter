@@ -1515,29 +1515,41 @@
                     <textarea id="orderAlamat" required placeholder="Masukkan alamat pengiriman lengkap" rows="3"
                         class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Pilih Ikan</label>
-                        <select id="orderIkan" required
-                            class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-red-500 outline-none transition">
-                            <option value="" disabled selected>-- Pilih Jenis Ikan --</option>
-                            <option value="Channa Barca">Channa Barca</option>
-                            <option value="Arwana Super Red">Arwana Super Red</option>
-                            <option value="Oscar">Oscar</option>
-                            <option value="Pbass (Peacock Bass)">Pbass (Peacock Bass)</option>
-                            <option value="Datnoids">Datnoids</option>
-                            <option value="Arapaima Gigas">Arapaima Gigas</option>
-                            <option value="Wolf Fish">Wolf Fish</option>
-                            <option value="Alligator Gar">Alligator Gar</option>
-                            <option value="Pari Air Tawar">Pari Air Tawar</option>
-                            <option value="Ikan Naga (Bichir)">Ikan Naga (Bichir)</option>
-                            <option value="Red Belly Piranha">Red Belly Piranha</option>
-                            <option value="African Tiger Fish">African Tiger Fish</option>
-                            <option value="Channa Maru Yellow Sentarum">Channa Maru Yellow Sentarum</option>
-                            <option value="Channa Red Barito">Channa Red Barito</option>
-                            <option value="Channa Auranti">Channa Auranti</option>
-                            <option value="Channa Limbata High Fin">Channa Limbata High Fin</option>
-                        </select>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">Pilih Ikan</label>
+                            <select id="orderIkan" required
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-red-500 outline-none transition">
+                                <option value="" disabled selected>-- Pilih Jenis Ikan --</option>
+                                <option value="Channa Barca">Channa Barca</option>
+                                <option value="Arwana Super Red">Arwana Super Red</option>
+                                <option value="Oscar">Oscar</option>
+                                <option value="Pbass (Peacock Bass)">Pbass (Peacock Bass)</option>
+                                <option value="Datnoids">Datnoids</option>
+                                <option value="Arapaima Gigas">Arapaima Gigas</option>
+                                <option value="Wolf Fish">Wolf Fish</option>
+                                <option value="Alligator Gar">Alligator Gar</option>
+                                <option value="Pari Air Tawar">Pari Air Tawar</option>
+                                <option value="Ikan Naga (Bichir)">Ikan Naga (Bichir)</option>
+                                <option value="Red Belly Piranha">Red Belly Piranha</option>
+                                <option value="African Tiger Fish">African Tiger Fish</option>
+                                <option value="Channa Maru Yellow Sentarum">Channa Maru Yellow Sentarum</option>
+                                <option value="Channa Red Barito">Channa Red Barito</option>
+                                <option value="Channa Auranti">Channa Auranti</option>
+                                <option value="Channa Limbata High Fin">Channa Limbata High Fin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">Pilih Ukuran</label>
+                            <select id="orderUkuran" required
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-red-500 outline-none transition">
+                                <option value="10-15cm">10-15 cm</option>
+                                <option value="20-25cm" selected>20-25 cm</option>
+                                <option value="30-35cm">30-35 cm</option>
+                                <option value="40cm+">40 cm+</option>
+                            </select>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Jumlah (Ekor)</label>
@@ -1556,54 +1568,25 @@
                     </div>
                 </div>
 
-                <!-- PRICE LIST COMPONENT -->
                 <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900/30">
                     <p class="font-bold text-red-700 uppercase tracking-wider text-[10px] mb-2 flex items-center gap-2">
-                        <i class="fas fa-tag"></i> Estimasi Harga Predator:
+                        <i class="fas fa-calculator"></i> Ringkasan Harga:
                     </p>
-                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-gray-700 dark:text-gray-300">
-                        <div class="flex justify-between"><span>Channa Barca:</span> <span
-                                class="font-bold text-red-600">5jt -
-                                50jt+</span></div>
-                        <div class="flex justify-between"><span>Arwana Super Red:</span> <span
-                                class="font-bold text-red-600">3jt
-                                - 15jt</span></div>
-                        <div class="flex justify-between"><span>Oscar:</span> <span class="font-bold text-red-600">100rb
-                                -
-                                500rb</span></div>
-                        <div class="flex justify-between"><span>Pbass:</span> <span class="font-bold text-red-600">200rb
-                                -
-                                1.5jt</span></div>
-                        <div class="flex justify-between"><span>Datnoid:</span> <span
-                                class="font-bold text-red-600">500rb -
-                                2.5jt</span></div>
-                        <div class="flex justify-between"><span>Arapaima:</span> <span
-                                class="font-bold text-red-600">2jt -
-                                10jt</span></div>
-                        <div class="flex justify-between"><span>Wolf Fish:</span> <span
-                                class="font-bold text-red-600">1jt -
-                                4jt</span></div>
-                        <div class="flex justify-between"><span>Alligator Gar:</span> <span
-                                class="font-bold text-red-600">300rb -
-                                1jt</span></div>
-                        <div class="flex justify-between"><span>Pari Motoro:</span> <span
-                                class="font-bold text-red-600">1.5jt -
-                                8jt</span></div>
-                        <div class="flex justify-between"><span>Ikan Naga (Bichir):</span> <span
-                                class="font-bold text-red-600">150rb - 600rb</span></div>
-                        <div class="flex justify-between"><span>Red Belly Piranha:</span> <span
-                                class="font-bold text-red-600">100rb - 300rb</span></div>
-                        <div class="flex justify-between"><span>African Tiger Fish:</span> <span
-                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
-                        <div class="flex justify-between"><span>Channa Maru Yellow Sentarum:</span> <span
-                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
-                        <div class="flex justify-between"><span>Channa Red Barito:</span> <span
-                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
-                        <div class="flex justify-between"><span>Channa Auranti:</span> <span
-                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
-                        <div class="flex justify-between"><span>Channa Limbata High Fin:</span> <span
-                                class="font-bold text-red-600">1.5jt - 5jt</span></div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">Harga Satuan:</span>
+                        <span id="displayHargaSatuan" class="font-bold text-red-600">Rp -</span>
                     </div>
+                    <div
+                        class="flex justify-between items-center text-lg mt-2 pt-2 border-t border-red-200 dark:border-red-800">
+                        <span class="font-bold text-gray-800 dark:text-white">Total:</span>
+                        <span id="displayHargaTotal" class="font-black text-red-600">Rp -</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Catatan Tambahan (Opsional)</label>
+                    <textarea id="orderCatatan" placeholder="Contoh: Ukuran spesifik 15cm, atau warna tertentu" rows="2"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1">Metode Pembayaran</label>
@@ -1649,6 +1632,53 @@
                 <!-- Order Modal Logic -->
 
                 <script>
+                    // Price Data
+                    const fishPrices = {
+                        "Channa Barca": { "10-15cm": 5000000, "20-25cm": 15000000, "30-35cm": 30000000, "40cm+": 50000000 },
+                        "Arwana Super Red": { "10-15cm": 3000000, "20-25cm": 6000000, "30-35cm": 10000000, "40cm+": 15000000 },
+                        "Oscar": { "10-15cm": 100000, "20-25cm": 250000, "30-35cm": 400000, "40cm+": 500000 },
+                        "Pbass (Peacock Bass)": { "10-15cm": 200000, "20-25cm": 500000, "30-35cm": 1000000, "40cm+": 1500000 },
+                        "Datnoids": { "10-15cm": 500000, "20-25cm": 1000000, "30-35cm": 1800000, "40cm+": 2500000 },
+                        "Arapaima Gigas": { "10-15cm": 2000000, "20-25cm": 4000000, "30-35cm": 7000000, "40cm+": 10000000 },
+                        "Wolf Fish": { "10-15cm": 1000000, "20-25cm": 2000000, "30-35cm": 3000000, "40cm+": 4000000 },
+                        "Alligator Gar": { "10-15cm": 300000, "20-25cm": 500000, "30-35cm": 800000, "40cm+": 1000000 },
+                        "Pari Air Tawar": { "10-15cm": 1500000, "20-25cm": 3000000, "30-35cm": 5500000, "40cm+": 8000000 },
+                        "Ikan Naga (Bichir)": { "10-15cm": 150000, "20-25cm": 300000, "30-35cm": 450000, "40cm+": 600000 },
+                        "Red Belly Piranha": { "10-15cm": 100000, "20-25cm": 150000, "30-35cm": 220000, "40cm+": 300000 },
+                        "African Tiger Fish": { "10-15cm": 1500000, "20-25cm": 2500000, "30-35cm": 3800000, "40cm+": 5000000 },
+                        "Channa Maru Yellow Sentarum": { "10-15cm": 1500000, "20-25cm": 2500000, "30-35cm": 3800000, "40cm+": 5000000 },
+                        "Channa Red Barito": { "10-15cm": 1500000, "20-25cm": 2500000, "30-35cm": 3800000, "40cm+": 5000000 },
+                        "Channa Auranti": { "10-15cm": 1500000, "20-25cm": 2500000, "30-35cm": 3800000, "40cm+": 5000000 },
+                        "Channa Limbata High Fin": { "10-15cm": 1500000, "20-25cm": 2500000, "30-35cm": 3800000, "40cm+": 5000000 }
+                    };
+
+                    function formatRupiah(number) {
+                        return new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0
+                        }).format(number);
+                    }
+
+                    function updateOrderPrice() {
+                        const ikan = document.getElementById('orderIkan').value;
+                        const ukuran = document.getElementById('orderUkuran').value;
+                        const jumlah = parseInt(document.getElementById('orderJumlah').value) || 1;
+                        const displaySatuan = document.getElementById('displayHargaSatuan');
+                        const displayTotal = document.getElementById('displayHargaTotal');
+
+                        if (ikan && fishPrices[ikan]) {
+                            const hargaSatuan = fishPrices[ikan][ukuran];
+                            const hargaTotal = hargaSatuan * jumlah;
+
+                            displaySatuan.textContent = formatRupiah(hargaSatuan);
+                            displayTotal.textContent = formatRupiah(hargaTotal);
+                        } else {
+                            displaySatuan.textContent = "Rp -";
+                            displayTotal.textContent = "Rp -";
+                        }
+                    }
+
                     // Order Modal Logic
                     const orderModal = document.getElementById('orderModal');
                     const navOrderBtn = document.getElementById('navOrderBtn');
@@ -1659,14 +1689,15 @@
                     function openOrderModal() {
                         orderModal.classList.add('show');
                         document.body.style.overflow = 'hidden';
+                        updateOrderPrice();
                     }
 
                     function openOrderFor(fishName) {
-                        openOrderModal();
                         const selectIkan = document.getElementById('orderIkan');
                         if (selectIkan) {
                             selectIkan.value = fishName;
                         }
+                        openOrderModal();
                     }
 
                     function closeOrderModalFunc() {
@@ -1677,6 +1708,12 @@
                     if (navOrderBtn) navOrderBtn.addEventListener('click', () => openOrderModal());
                     if (mobileOrderBtn) mobileOrderBtn.addEventListener('click', () => openOrderModal());
                     if (closeOrderModal) closeOrderModal.addEventListener('click', closeOrderModalFunc);
+
+                    document.getElementById('orderIkan').addEventListener('change', updateOrderPrice);
+                    document.getElementById('orderUkuran').addEventListener('change', updateOrderPrice);
+                    document.getElementById('orderJumlah').addEventListener('input', updateOrderPrice);
+                    document.getElementById('plusJumlah').addEventListener('click', () => setTimeout(updateOrderPrice, 10));
+                    document.getElementById('minusJumlah').addEventListener('click', () => setTimeout(updateOrderPrice, 10));
 
                     // Bukti Transfer Preview Logic
                     const orderBukti = document.getElementById('orderBukti');
@@ -1729,21 +1766,27 @@
                         const telp = document.getElementById('orderTelp').value;
                         const alamat = document.getElementById('orderAlamat').value;
                         const ikan = document.getElementById('orderIkan').value;
+                        const ukuran = document.getElementById('orderUkuran').value;
                         const jumlah = document.getElementById('orderJumlah').value;
                         const payment = document.getElementById('orderPayment').value;
+                        const catatan = document.getElementById('orderCatatan').value || "-";
+                        const totalHarga = document.getElementById('displayHargaTotal').textContent;
                         const hasBukti = orderBukti.files.length > 0 ? "✅ SUDAH SIAP" : "❌ BELUM DILAMPIRKAN";
 
                         const message = `*ORDER KONFIRMASI - DS FISH HUNTER*%0A` +
                             `------------------------------------------%0A` +
                             `Saya ingin memesan predator premium berikut:%0A%0A` +
                             `👑 *Jenis Ikan:* ${ikan}%0A` +
-                            `🔢 *Jumlah:* ${jumlah} Ekor%0A%0A` +
+                            `📏 *Ukuran:* ${ukuran}%0A` +
+                            `🔢 *Jumlah:* ${jumlah} Ekor%0A` +
+                            `💰 *Total Harga:* ${totalHarga}%0A` +
+                            `📝 *Catatan:* ${catatan}%0A%0A` +
                             `*DATA PEMESAN*%0A` +
                             `👤 *Nama:* ${nama}%0A` +
                             `📍 *Alamat:* ${alamat}%0A` +
                             `📞 *WhatsApp:* ${telp}%0A%0A` +
                             `*PEMBAYARAN*%0A` +
-                            `💰 *Metode:* ${payment}%0A` +
+                            `💳 *Metode:* ${payment}%0A` +
                             `📑 *Status Bukti:* ${hasBukti}%0A` +
                             `------------------------------------------%0A` +
                             `_Silakan proses pesanan saya. Saya akan mengirimkan bukti transfer setelah ini._`;
