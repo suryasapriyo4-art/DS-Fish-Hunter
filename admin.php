@@ -565,7 +565,8 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         Pendapatan</h3>
                     <i class="fas fa-wallet" style="font-size: 1.5rem; color: var(--gold); opacity: 0.5;"></i>
                 </div>
-                <div class="value" style="color: var(--gold); font-size: 2.5rem; line-height: 1.2;"><span id="statPendapatan">Rp 0</span></div>
+                <div class="value" style="color: var(--gold); font-size: 2.5rem; line-height: 1.2;"><span
+                        id="statPendapatan">Rp 0</span></div>
                 <div style="margin-top: 1rem; color: #666; font-size: 0.8rem;">
                     Total Akumulasi Transaksi
                 </div>
@@ -678,11 +679,55 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
                         customer: 'Budi Santoso',
                         item: 'Channa Barca (High Quality)',
                         quantity: 2,
-                        price: 'Rp 30.000.000',
+                        price: 'Rp 60.000.000',
                         date: '2025-01-28',
                         status: 'Approved',
                         address: 'Jl. Merdeka No. 12, Jakarta Selatan',
                         phone: '0812-3456-7890'
+                    },
+                    {
+                        id: 'TRX-002',
+                        customer: 'Siti Aminah',
+                        item: 'Arwana Super Red',
+                        quantity: 1,
+                        price: 'Rp 8.500.000',
+                        date: '2025-02-01',
+                        status: 'Pending',
+                        address: 'Komp. Gading Serpong Blok A1, Tangerang',
+                        phone: '0819-8765-4321'
+                    },
+                    {
+                        id: 'TRX-003',
+                        customer: 'Doni Pratama',
+                        item: 'P-Bass Monoculus',
+                        quantity: 5,
+                        price: 'Rp 6.000.000',
+                        date: '2025-02-02',
+                        status: 'Approved',
+                        address: 'Jl. Ahmad Yani No. 45, Surabaya',
+                        phone: '0857-1122-3344'
+                    },
+                    {
+                        id: 'TRX-004',
+                        customer: 'Andi Wijaya',
+                        item: 'Ikan Pari Motorop',
+                        quantity: 2,
+                        price: 'Rp 4.000.000',
+                        date: '2025-02-03',
+                        status: 'Pending',
+                        address: 'Bintaro Jaya Sektor 7, Tangerang Selatan',
+                        phone: '0812-7788-9900'
+                    },
+                    {
+                        id: 'TRX-005',
+                        customer: 'Rina Kusuma',
+                        item: 'Wolf Fish Malabaricus',
+                        quantity: 1,
+                        price: 'Rp 2.500.000',
+                        date: '2025-02-04',
+                        status: 'Approved',
+                        address: 'Tebet Timur Dalam, Jakarta Selatan',
+                        phone: '0856-4433-2211'
                     }
                 ];
                 localStorage.setItem('adminOrders', JSON.stringify(mockOrders));
@@ -759,7 +804,7 @@ $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
         function updateStats() {
             let totalRevenue = 0;
             let approvedOrders = 0;
-            
+
             orders.forEach(o => {
                 if (o.status === 'Approved') {
                     const price = parseInt(o.price.replace(/[^0-9]/g, '')) || 0;
